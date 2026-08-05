@@ -320,6 +320,11 @@ export default defineConfig(({ mode }) => {
         minify: true,
       }),
     ],
+    build: {
+      sourcemap: false,
+      minify: "esbuild",
+      target: "esnext",
+    },
     publicDir: "../public",
   };
 });
