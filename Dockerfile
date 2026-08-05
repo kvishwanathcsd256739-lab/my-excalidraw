@@ -29,7 +29,7 @@
 # layer size from ~1.1 GB to ~230 MB. The build stage is discarded after
 # the final stage copies the output, so this does not affect the image size.
 # -----------------------------------------------------------------------------
-FROM --platform=${BUILDPLATFORM} node:24-slim@sha256:4b1f85ea503d0b6a5bc4ebf567dde12d9b94ca42b8c0f86e8df99f0b5bec8993 AS build
+FROM --platform=${BUILDPLATFORM} node:20-slim AS build
 
 WORKDIR /opt/node_app
 
@@ -88,7 +88,7 @@ RUN npm_config_target_arch=${TARGETARCH} \
 # nginx:stable-alpine-slim is the official minimal nginx image (~10 MB).
 # Only the compiled static output is copied from the build stage.
 # -----------------------------------------------------------------------------
-FROM nginx:stable-alpine-slim@sha256:2c605dbeab79a6b2a63340474fe58119d0ef95bdc4b1f41df0aa689659b3d13b AS serve
+FROM nginx:stable-alpine-slim AS serve
 
 # OCI standard image labels
 # These appear in `docker inspect`, container registries (ECR, DockerHub),
