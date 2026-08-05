@@ -1,23 +1,44 @@
+# =============================================================================
+# docker-compose.yml — DEVELOPMENT ONLY
+# =============================================================================
+#
+# ⚠️  DO NOT USE IN PRODUCTION  ⚠️
+#
+# This compose file is for local development only. It:
+#   - Builds with NODE_ENV=development (includes dev tooling)
+#   - Volume-mounts the local source tree into the container
+#   - Intentionally disables the healthcheck (faster iteration)
+#
+# For production deployment, use:
+#   docker-compose -f docker-compose.prod.yml up
+#
+# =============================================================================
+
 services:
   excalidraw:
     build:
       context: .
       args:
         - NODE_ENV=development
-    container_name: excalidraw
+    container_name: excalidraw-dev
     ports:
       - "3000:80"
     restart: on-failure
     stdin_open: true
+    # Healthcheck is disabled in dev to avoid false alarms during hot-reload
+    # restarts and to speed up container startup iteration.
     healthcheck:
       disable: true
     environment:
       - NODE_ENV=development
     volumes:
+      # Mount source code for live development (not used in production image)
       - ./:/opt/node_app/app:delegated
       - ./package.json:/opt/node_app/package.json
       - ./yarn.lock:/opt/node_app/yarn.lock
+      # Isolate container node_modules from host node_modules
       - notused:/opt/node_app/app/node_modules
 
 volumes:
   notused:
+

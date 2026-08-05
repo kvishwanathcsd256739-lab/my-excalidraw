@@ -1,6 +1,9 @@
 .DS_Store
 .env.development.local
 .env.local
+# .env.production contains real credentials (Firebase config, API keys).
+# Never commit this file. Copy from .env.example and fill in your values.
+.env.production
 .env.production.local
 .env.test.local
 .envrc

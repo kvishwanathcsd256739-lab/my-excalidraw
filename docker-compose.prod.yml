@@ -1,0 +1,166 @@
+# =============================================================================
+# docker-compose.prod.yml — Production deployment
+# =============================================================================
+#
+# Usage:
+#   1. Copy .env.example to .env.production and fill in your values:
+#        cp .env.example .env.production
+#        # edit .env.production with your Firebase config, WS server URL, etc.
+#
+#   2. Build the image (only needed when source code changes):
+#        docker-compose -f docker-compose.prod.yml build
+#
+#   3. Start the stack:
+#        docker-compose -f docker-compose.prod.yml up -d
+#
+#   4. View logs:
+#        docker-compose -f docker-compose.prod.yml logs -f
+#
+#   5. Stop gracefully (waits for in-flight requests to finish):
+#        docker-compose -f docker-compose.prod.yml down
+#
+# Environment variable injection:
+#   Variables in .env.production are passed to the container at runtime.
+#   The docker-entrypoint.sh script substitutes them into index.html before
+#   nginx starts. This means you can change VITE_APP_WS_SERVER_URL,
+#   VITE_APP_FIREBASE_CONFIG, etc. WITHOUT rebuilding the image — just
+#   restart the container.
+#
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # excalidraw — static SPA served by nginx
+  # ---------------------------------------------------------------------------
+  excalidraw:
+    image: excalidraw:latest
+    # To build locally instead of using a pre-built image, replace `image:`
+    # with the build block below:
+    # build:
+    #   context: .
+    #   args:
+    #     NODE_ENV: production
+    #     GIT_SHA: ${GIT_SHA:-unknown}  # pass: GIT_SHA=$(git rev-parse --short HEAD)
+
+    container_name: excalidraw-prod
+
+    ports:
+      - "${EXCALIDRAW_PORT:-8080}:80"
+
+    # Runtime environment variables.
+    # docker-entrypoint.sh reads these and substitutes them into index.html
+    # before nginx starts. Allows one image to serve multiple environments.
+    # Values are loaded from .env.production (see .env.example for all options).
+    env_file:
+      - .env.production
+
+    # Restart policy: restart automatically after crashes or host reboots,
+    # but NOT when the container is explicitly stopped with `docker stop` or
+    # `docker-compose down`. Use `always` if you want restarts even after
+    # manual stops (e.g. when the host reboots after a `docker stop`).
+    restart: unless-stopped
+
+    # Graceful shutdown:
+    # Send SIGQUIT instead of SIGTERM. nginx treats SIGQUIT as a graceful
+    # shutdown — it stops accepting new connections and waits for existing
+    # requests to complete before exiting (up to worker_shutdown_timeout).
+    # SIGTERM would cause an abrupt fast-shutdown, potentially dropping
+    # in-flight requests (e.g., Firebase file uploads during collaboration).
+    stop_signal: SIGQUIT
+
+    # How long Docker waits after sending stop_signal before force-killing.
+    # Set higher than nginx.conf worker_shutdown_timeout (10s) to give
+    # nginx time to drain connections before Docker loses patience.
+    stop_grace_period: 30s
+
+    # Health check: probe the /health endpoint defined in nginx.conf.
+    # This returns HTTP 200 "ok" with no database or filesystem dependency.
+    # Used by Docker to determine container health for `--health-cmd` and
+    # is reflected in `docker ps` HEALTH column and orchestrator health gates.
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+    # Resource limits: nginx serving static files is very lightweight.
+    # Adjust based on your expected concurrent user count.
+    # Note: `deploy.resources` only applies to `docker stack deploy` (Swarm)
+    # by default. For docker-compose, you need `--compatibility` flag OR
+    # use the v2 `mem_limit`/`cpus` fields (shown in comments below).
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"       # max 50% of one CPU core
+          memory: 256M       # max 256 MB RAM
+        reservations:
+          cpus: "0.10"       # guarantee 10% of one CPU core
+          memory: 64M        # guarantee 64 MB RAM
+
+    # For plain docker-compose (non-Swarm), uncomment these instead:
+    # mem_limit: 256m
+    # cpus: 0.5
+
+    # Logging: json-file with rotation prevents logs from filling the disk.
+    # docker logs still works as normal.
+    # Access logs are written by nginx to /dev/stdout (configured in nginx.conf)
+    # and captured here with rotation.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"    # rotate when log file reaches 10 MB
+        max-file: "3"      # keep at most 3 rotated log files (30 MB total)
+
+    networks:
+      - frontend
+
+  # ---------------------------------------------------------------------------
+  # excalidraw-room — real-time collaboration WebSocket relay (OPTIONAL)
+  # ---------------------------------------------------------------------------
+  # Uncomment this service if you want to self-host the collaboration server.
+  # The excalidraw-room image is a separate open-source project:
+  #   https://github.com/excalidraw/excalidraw-room
+  #
+  # After enabling, set VITE_APP_WS_SERVER_URL=http://excalidraw-room:3002
+  # in .env.production and rebuild the excalidraw image.
+  #
+  # IMPORTANT: excalidraw-room is stateless (in-memory only).
+  # If you run multiple replicas behind a load balancer, you MUST configure
+  # sticky sessions (IP or cookie affinity) OR use the Socket.IO Redis adapter.
+  # Without sticky sessions, clients in the same room may land on different
+  # instances and never see each other's updates.
+  #
+  # excalidraw-room:
+  #   image: excalidraw/excalidraw-room:latest
+  #   container_name: excalidraw-room
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - PORT=3002
+  #   restart: unless-stopped
+  #   stop_grace_period: 30s
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:3002"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     start_period: 5s
+  #     retries: 3
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+  #   networks:
+  #     - frontend
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  frontend:
+    # Use the default bridge driver.
+    # In production with multiple hosts, switch to `overlay` (Docker Swarm)
+    # or use a dedicated container networking solution.
+    driver: bridge

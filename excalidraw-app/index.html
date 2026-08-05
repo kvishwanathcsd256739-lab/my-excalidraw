@@ -92,6 +92,36 @@
       }
     </style>
 
+    <!--
+      Runtime environment injection — populated at container startup by
+      docker-entrypoint.sh using envsubst. The ${VAR} tokens below are
+      replaced with actual Docker environment variable values before nginx
+      serves this file.
+
+      In local development (yarn start), this block is inert — Vite resolves
+      import.meta.env.VITE_APP_* from .env.development at build time. The
+      window.__env__ object is only read by the app when running in Docker
+      (where import.meta.env.* values were baked from .env.production at
+      image build time, and may be overridden here at container start time).
+
+      IMPORTANT: Do not change the ${...} syntax — envsubst depends on it.
+    -->
+    <script>
+      window.__env__ = {
+        VITE_APP_FIREBASE_CONFIG:       "${VITE_APP_FIREBASE_CONFIG}",
+        VITE_APP_BACKEND_V2_GET_URL:    "${VITE_APP_BACKEND_V2_GET_URL}",
+        VITE_APP_BACKEND_V2_POST_URL:   "${VITE_APP_BACKEND_V2_POST_URL}",
+        VITE_APP_WS_SERVER_URL:         "${VITE_APP_WS_SERVER_URL}",
+        VITE_APP_LIBRARY_URL:           "${VITE_APP_LIBRARY_URL}",
+        VITE_APP_LIBRARY_BACKEND:       "${VITE_APP_LIBRARY_BACKEND}",
+        VITE_APP_AI_BACKEND:            "${VITE_APP_AI_BACKEND}",
+        VITE_APP_PLUS_LP:               "${VITE_APP_PLUS_LP}",
+        VITE_APP_PLUS_APP:              "${VITE_APP_PLUS_APP}",
+        VITE_APP_PLUS_EXPORT_PUBLIC_KEY:"${VITE_APP_PLUS_EXPORT_PUBLIC_KEY}",
+        VITE_APP_DISABLE_SENTRY:        "${VITE_APP_DISABLE_SENTRY}",
+      };
+    </script>
+
     <!-- Warmup the connection for Google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

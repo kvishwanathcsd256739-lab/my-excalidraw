@@ -1,0 +1,260 @@
+# =============================================================================
+# deploy/docker-compose.ec2.yml — Full EC2 production stack
+# =============================================================================
+#
+# Services:
+#   nginx-proxy       — internet-facing reverse proxy (ports 80, 443)
+#   certbot           — Let's Encrypt certificate management
+#   excalidraw        — Excalidraw SPA (pulled from ECR, no host ports)
+#   excalidraw-room   — Socket.IO collaboration relay (no host ports)
+#
+# Usage:
+#   docker compose -f deploy/docker-compose.ec2.yml up -d
+#   docker compose -f deploy/docker-compose.ec2.yml logs -f
+#   docker compose -f deploy/docker-compose.ec2.yml down
+#
+# Required env vars (set in /opt/excalidraw/.env.production):
+#   DOMAIN                  — your domain name (e.g. draw.example.com)
+#   ECR_REGISTRY            — AWS ECR registry URL (ACCOUNT.dkr.ecr.REGION.amazonaws.com)
+#   ECR_REPOSITORY          — ECR repository name (e.g. excalidraw)
+#   IMAGE_TAG               — image tag to deploy (e.g. latest or git SHA)
+#   VITE_APP_FIREBASE_CONFIG — Firebase project config JSON string
+#   VITE_APP_WS_SERVER_URL  — WebSocket server URL (https://DOMAIN/socket.io)
+#   VITE_APP_BACKEND_V2_GET_URL  — shareable link backend GET URL
+#   VITE_APP_BACKEND_V2_POST_URL — shareable link backend POST URL
+#
+# Prerequisites:
+#   - Run deploy/setup.sh first
+#   - Run deploy/certbot-init.sh first (TLS certs must exist before nginx-proxy starts)
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # nginx-proxy — internet-facing TLS-terminating reverse proxy
+  #
+  # Responsibilities:
+  #   - Binds ports 80 and 443 on the host (the only container to do so)
+  #   - Redirects HTTP → HTTPS
+  #   - Serves ACME challenge for certificate renewal
+  #   - Terminates TLS with Let's Encrypt certificates
+  #   - Proxies /         → excalidraw container
+  #   - Proxies /socket.io/ → excalidraw-room container (WebSocket)
+  # ---------------------------------------------------------------------------
+  nginx-proxy:
+    image: nginx:stable-alpine-slim
+    container_name: excalidraw-proxy
+    restart: unless-stopped
+    stop_signal: SIGQUIT
+    stop_grace_period: 30s
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # nginx config (read-only mount — nginx reads this at startup)
+      - ./deploy/nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+      # Let's Encrypt certificates (shared with certbot container)
+      - certbot-conf:/etc/letsencrypt:ro
+      # ACME HTTP challenge webroot (shared with certbot container)
+      - certbot-www:/var/www/certbot:ro
+      # nginx access/error logs (persistent on host for analysis)
+      - /opt/excalidraw/logs/nginx:/var/log/nginx
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    # t2.micro memory budget: nginx proxy uses ~30 MB
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.20"
+        reservations:
+          memory: 16M
+    depends_on:
+      - excalidraw
+    networks:
+      - excalidraw-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # ---------------------------------------------------------------------------
+  # certbot — Let's Encrypt certificate acquisition and renewal
+  #
+  # First run (certbot-init.sh): obtains the initial certificate
+  # Ongoing: runs `certbot renew` every 12 hours. Let's Encrypt certs expire
+  # in 90 days; certbot renews when < 30 days remaining.
+  #
+  # After renewal, the post-hook sends SIGHUP to nginx-proxy to reload
+  # the new certificate without dropping connections.
+  #
+  # The certbot-conf volume is shared read-only with nginx-proxy.
+  # ---------------------------------------------------------------------------
+  certbot:
+    image: certbot/certbot:latest
+    container_name: excalidraw-certbot
+    restart: unless-stopped
+    volumes:
+      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    # Run certbot renew every 12 hours.
+    # Certbot will only actually renew if the cert expires within 30 days.
+    # The post-hook signals nginx-proxy to reload without restarting.
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do \
+        certbot renew \
+            --webroot \
+            --webroot-path=/var/www/certbot \
+            --post-hook='docker kill --signal=SIGHUP excalidraw-proxy' \
+            --quiet; \
+        sleep 12h & wait $${!}; \
+    done"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.10"
+    networks:
+      - excalidraw-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "2m"
+        max-file: "2"
+
+  # ---------------------------------------------------------------------------
+  # excalidraw — Excalidraw SPA served by nginx
+  #
+  # Image pulled from AWS ECR. No host ports — only reachable from nginx-proxy
+  # via the internal excalidraw-net network.
+  #
+  # Environment variables are injected at container start by docker-entrypoint.sh
+  # (the runtime env injection mechanism built in the previous phase).
+  # ---------------------------------------------------------------------------
+  excalidraw:
+    image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG:-latest}
+    container_name: excalidraw-app
+    restart: unless-stopped
+    stop_signal: SIGQUIT
+    stop_grace_period: 30s
+    # No ports: only reachable from nginx-proxy on the internal network
+    env_file:
+      - /opt/excalidraw/.env.production
+    # Runtime env injection: these are also set from .env.production, but
+    # listed explicitly for documentation clarity. The entrypoint.sh script
+    # substitutes them into index.html at container start.
+    environment:
+      - VITE_APP_WS_SERVER_URL=${VITE_APP_WS_SERVER_URL:-https://${DOMAIN}/socket.io}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    # t2.micro memory budget: nginx SPA container uses ~30 MB normally
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+          cpus: "0.30"
+        reservations:
+          memory: 32M
+    networks:
+      - excalidraw-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # ---------------------------------------------------------------------------
+  # excalidraw-room — Socket.IO real-time collaboration relay
+  #
+  # Pulled from Docker Hub (official excalidraw-room image).
+  # Stateless: only relays encrypted WebSocket messages between clients.
+  # No database, no file storage — all data is in Firebase.
+  #
+  # IMPORTANT (free tier): On t2.micro, cap Node.js heap to 100 MB.
+  # NODE_OPTIONS=--max-old-space-size=100 sets the V8 heap limit.
+  # Without this, Node.js may use up to 1.5x available RAM before GC.
+  #
+  # IMPORTANT (scaling): If you ever run multiple replicas or instances,
+  # you MUST configure sticky sessions (IP affinity) on your load balancer,
+  # OR use the Socket.IO Redis adapter. Without this, clients in the same
+  # room can land on different instances and never see each other's updates.
+  # ---------------------------------------------------------------------------
+  excalidraw-room:
+    image: excalidraw/excalidraw-room:latest
+    container_name: excalidraw-room
+    restart: unless-stopped
+    stop_grace_period: 30s
+    # No host ports — only reachable from nginx-proxy via /socket.io/ path
+    environment:
+      - PORT=3002
+      # Cap V8 heap to 100 MB to prevent OOM on t2.micro
+      - NODE_OPTIONS=--max-old-space-size=100
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:3002"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    # t2.micro memory budget: Node.js room server uses ~100-150 MB
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+          cpus: "0.30"
+        reservations:
+          memory: 64M
+    networks:
+      - excalidraw-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  excalidraw-net:
+    # All containers on this bridge network can reach each other by name.
+    # Only nginx-proxy is exposed to the host via ports 80/443.
+    driver: bridge
+
+# =============================================================================
+# Volumes
+#
+# Named volumes are managed by Docker and persist across container restarts.
+# They survive `docker compose down` (only removed by `docker compose down -v`).
+#
+# BACKUP THESE VOLUMES — especially certbot-conf (TLS certificates).
+# Let's Encrypt has a rate limit of 5 certificates per week per domain.
+# Losing certificates means you cannot get new ones immediately.
+# =============================================================================
+volumes:
+  # Let's Encrypt certificates
+  # Host path: /opt/excalidraw/certbot/conf/
+  # Used by: certbot (write), nginx-proxy (read-only)
+  certbot-conf:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/excalidraw/certbot/conf
+
+  # ACME HTTP-01 challenge webroot
+  # Host path: /opt/excalidraw/certbot/www/
+  # Used by: certbot (write challenge files), nginx-proxy (serve challenge)
+  certbot-www:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/excalidraw/certbot/www

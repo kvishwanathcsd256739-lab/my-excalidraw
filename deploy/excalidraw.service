@@ -1,0 +1,57 @@
+[Unit]
+Description=Excalidraw Production Stack
+Documentation=https://github.com/excalidraw/excalidraw
+# Start AFTER Docker daemon is running AND the network is up.
+# network-online.target ensures DNS resolution works (needed for ECR pulls
+# and the certbot ACME challenge on first boot after a deploy).
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+# The deploy directory inside the git clone
+WorkingDirectory=/opt/excalidraw/repo
+
+# Start: pull latest images from ECR, then start all services
+# Uses docker compose (plugin syntax, not docker-compose)
+ExecStartPre=/usr/bin/bash -c '\
+    source /opt/excalidraw/.env.production && \
+    aws ecr get-login-password --region ${AWS_REGION} \
+    | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
+
+ExecStart=/usr/bin/docker compose \
+    -f deploy/docker-compose.ec2.yml \
+    up -d --remove-orphans
+
+# Stop: graceful shutdown (SIGQUIT to nginx-proxy drains in-flight requests)
+ExecStop=/usr/bin/docker compose \
+    -f deploy/docker-compose.ec2.yml \
+    down
+
+# Reload: rolling restart without downtime
+ExecReload=/usr/bin/docker compose \
+    -f deploy/docker-compose.ec2.yml \
+    up -d --no-deps --remove-orphans
+
+# Restart policy: restart on failure with a 10s delay.
+# Avoids a fast restart loop if Docker itself is still initialising on boot.
+Restart=on-failure
+RestartSec=10s
+
+# Log systemd events to journald (docker logs work separately via Docker daemon)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=excalidraw
+
+# Run as root (required for docker commands without socket permission issues)
+# If your ubuntu user is in the docker group and you want to run as ubuntu,
+# replace User=root with User=ubuntu
+User=root
+
+[Install]
+# WantedBy=multi-user.target ensures this service starts in normal (non-GUI)
+# multi-user mode, which is the default for Ubuntu Server on EC2.
+WantedBy=multi-user.target
