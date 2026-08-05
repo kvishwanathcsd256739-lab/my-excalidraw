@@ -52,14 +52,15 @@ set -a; source "$ENV_FILE"; set +a
 [[ -n "${1:-}" ]] && IMAGE_TAG="$1"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 
-[[ -z "${ECR_REGISTRY:-}" ]]    && error "ECR_REGISTRY is not set in $ENV_FILE"
-[[ -z "${ECR_REPOSITORY:-}" ]]  && error "ECR_REPOSITORY is not set in $ENV_FILE"
 [[ -z "${DOMAIN:-}" ]]          && error "DOMAIN is not set in $ENV_FILE"
-[[ -z "${AWS_REGION:-}" ]]      && error "AWS_REGION is not set in $ENV_FILE"
 
-ECR_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+USE_ECR=true
+if [[ -z "${ECR_REGISTRY:-}" ]]; then
+    warn "ECR_REGISTRY is not set in $ENV_FILE. Switching to local container build mode."
+    USE_ECR=false
+    COMPOSE_FILE="${SCRIPT_DIR}/oci/docker-compose.oci.yml"
+fi
 
-info "Deploying: ${ECR_IMAGE}"
 info "Domain:    https://${DOMAIN}"
 info "Compose:   ${COMPOSE_FILE}"
 
@@ -75,36 +76,26 @@ EXPIRY=$(openssl x509 -noout -enddate -in "$CERT_FILE" | cut -d= -f2)
 info "Certificate expires: ${EXPIRY}"
 
 # =============================================================================
-# 3. ECR login
+# 3. Pull or Build Images
 # =============================================================================
-section "Logging in to AWS ECR"
+if [[ "$USE_ECR" == "true" ]]; then
+    section "Logging in to AWS ECR"
+    aws ecr get-login-password --region "${AWS_REGION:-us-east-1}" \
+        | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+    info "ECR login successful."
 
-# Try using an IAM instance profile first (recommended — no stored keys).
-# Falls back to environment variable credentials if instance profile is absent.
-if aws sts get-caller-identity --query Account --output text &>/dev/null; then
-    info "Using IAM instance profile / environment credentials."
+    section "Pulling images from ECR"
+    ECR_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY:-excalidraw}:${IMAGE_TAG}"
+    docker pull "${ECR_IMAGE}"
+    docker pull excalidraw/excalidraw-room:latest
 else
-    error "AWS authentication failed. Attach an IAM role with AmazonEC2ContainerRegistryReadOnly"$'\n'"to your EC2 instance, or set AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY in $ENV_FILE."
+    section "Building containers locally"
+    if ! docker image inspect excalidraw-room:local >/dev/null 2>&1; then
+        info "Building excalidraw-room for local deployment..."
+        bash "${SCRIPT_DIR}/oci/build-room.sh"
+    fi
+    docker compose -f "${COMPOSE_FILE}" build excalidraw
 fi
-
-aws ecr get-login-password --region "${AWS_REGION}" \
-    | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
-info "ECR login successful."
-
-# =============================================================================
-# 4. Pull images
-# =============================================================================
-section "Pulling images"
-
-info "Pulling Excalidraw SPA from ECR: ${ECR_IMAGE}"
-docker pull "${ECR_IMAGE}"
-
-info "Pulling excalidraw-room from Docker Hub..."
-docker pull excalidraw/excalidraw-room:latest
-
-info "Pulling nginx and certbot (if newer versions available)..."
-docker pull nginx:stable-alpine-slim
-docker pull certbot/certbot:latest
 
 # =============================================================================
 # 5. Capture currently running image tag for rollback
