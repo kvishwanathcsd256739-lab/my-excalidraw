@@ -105,14 +105,11 @@ services:
     # Run certbot renew every 12 hours.
     # Certbot will only actually renew if the cert expires within 30 days.
     # The post-hook signals nginx-proxy to reload without restarting.
-    entrypoint: /bin/sh -c "trap exit TERM; while :; do \
-        certbot renew \
-            --webroot \
-            --webroot-path=/var/www/certbot \
-            --post-hook='docker kill --signal=SIGHUP excalidraw-proxy' \
-            --quiet; \
-        sleep 12h & wait $${!}; \
-    done"
+    entrypoint: >-
+      /bin/sh -c "trap exit TERM; while :; do
+      certbot renew --webroot --webroot-path=/var/www/certbot --post-hook='docker kill --signal=SIGHUP excalidraw-proxy' --quiet;
+      sleep 12h & wait \$${!};
+      done"
     deploy:
       resources:
         limits:
