@@ -109,6 +109,7 @@ info "(This requires a working internet connection and port 80 open)"
 # Once you have confirmed staging works, re-run without --staging
 
 CERTBOT_ARGS=(
+    --non-interactive
     --webroot
     --webroot-path=/var/www/certbot
     --email "${CERTBOT_EMAIL}"
