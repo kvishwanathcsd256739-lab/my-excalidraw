@@ -78,6 +78,7 @@ if [ ! -s "$TMPFILE" ]; then
 fi
 
 mv "$TMPFILE" "$INDEX_HTML"
+chmod 644 "$INDEX_HTML"
 
 echo "[entrypoint] Environment variable injection complete."
 
