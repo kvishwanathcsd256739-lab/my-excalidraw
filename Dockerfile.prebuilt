@@ -1,0 +1,18 @@
+# =============================================================================
+# Dockerfile.prebuilt — Production image utilizing prebuilt assets
+# =============================================================================
+# This file is used to bypass compiling Node/Vite assets on resource-constrained
+# servers (like AWS EC2 t2.micro or OCI Always Free). The compilation is run
+# locally, and the build folder is copied directly into the Nginx container.
+# =============================================================================
+
+FROM nginx:stable-alpine-slim
+
+# Copy prebuilt static assets from local build output
+COPY excalidraw-app/build /usr/share/nginx/html
+
+# Copy runtime environment variable injector
+COPY docker-entrypoint.sh /docker-entrypoint.d/40-docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.d/40-docker-entrypoint.sh
+
+EXPOSE 80

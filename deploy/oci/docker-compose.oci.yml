@@ -70,7 +70,7 @@ services:
   excalidraw:
     build:
       context: ../..
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prebuilt
       args:
         NODE_ENV: production
     container_name: excalidraw-app
