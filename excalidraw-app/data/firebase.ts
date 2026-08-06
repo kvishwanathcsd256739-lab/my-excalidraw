@@ -53,6 +53,16 @@ try {
   FIREBASE_CONFIG = {};
 }
 
+export const isFirebaseEnabled = () => {
+  return !!(
+    FIREBASE_CONFIG &&
+    FIREBASE_CONFIG.apiKey &&
+    FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" &&
+    FIREBASE_CONFIG.projectId &&
+    FIREBASE_CONFIG.projectId !== "YOUR_PROJECT"
+  );
+};
+
 let firebaseApp: ReturnType<typeof initializeApp> | null = null;
 let firestore: ReturnType<typeof getFirestore> | null = null;
 let firebaseStorage: ReturnType<typeof getStorage> | null = null;
@@ -149,6 +159,9 @@ export const saveFilesToFirebase = async ({
   prefix: string;
   files: { id: FileId; buffer: Uint8Array }[];
 }) => {
+  if (!isFirebaseEnabled()) {
+    return { savedFiles: [], erroredFiles: files.map((f) => f.id) };
+  }
   const storage = await loadFirebaseStorage();
 
   const erroredFiles: FileId[] = [];
@@ -189,6 +202,9 @@ export const saveToFirebase = async (
   elements: readonly SyncableExcalidrawElement[],
   appState: AppState,
 ) => {
+  if (!isFirebaseEnabled()) {
+    return null;
+  }
   const { roomId, roomKey, socket } = portal;
   if (
     // bail if no room exists as there's nothing we can do at this point
@@ -251,6 +267,9 @@ export const loadFromFirebase = async (
   roomKey: string,
   socket: Socket | null,
 ): Promise<readonly SyncableExcalidrawElement[] | null> => {
+  if (!isFirebaseEnabled()) {
+    return null;
+  }
   const firestore = _getFirestore();
   const docRef = doc(firestore, "scenes", roomId);
   const docSnap = await getDoc(docRef);
@@ -276,6 +295,11 @@ export const loadFilesFromFirebase = async (
   decryptionKey: string,
   filesIds: readonly FileId[],
 ) => {
+  if (!isFirebaseEnabled()) {
+    const erroredFiles = new Map<FileId, true>();
+    filesIds.forEach((id) => erroredFiles.set(id, true));
+    return { loadedFiles: [], erroredFiles };
+  }
   const loadedFiles: BinaryFileData[] = [];
   const erroredFiles = new Map<FileId, true>();
 
