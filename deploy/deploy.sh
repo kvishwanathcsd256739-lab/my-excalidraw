@@ -94,7 +94,12 @@ else
         info "Building excalidraw-room for local deployment..."
         bash "${SCRIPT_DIR}/oci/build-room.sh"
     fi
-    docker compose -f "${COMPOSE_FILE}" build excalidraw
+    if ! docker image inspect oci-excalidraw:latest >/dev/null 2>&1; then
+        info "Building excalidraw for local deployment..."
+        docker compose -f "${COMPOSE_FILE}" build excalidraw
+    else
+        info "excalidraw image (oci-excalidraw:latest) already exists. Skipping build."
+    fi
 fi
 
 # =============================================================================
