@@ -73,3 +73,7 @@ excalidraw-app/tests/
 # ── Exclude: deployment scripts (not needed in the application image) ─────────
 deploy/
 
+# ── Re-include prebuilt assets for Dockerfile.prebuilt ────────────────────────
+!excalidraw-app/build
+
+
