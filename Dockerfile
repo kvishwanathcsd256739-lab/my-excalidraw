@@ -79,7 +79,7 @@ ARG GIT_SHA=docker-build
 # VITE_APP_GIT_SHA: used by sentry.ts for release tracking and exposed as
 # window.__EXCALIDRAW_SHA__ for version identification.
 RUN npm_config_target_arch=${TARGETARCH} \
-    NODE_OPTIONS="--max-old-space-size=2048" \
+    NODE_OPTIONS="--max-old-space-size=768" \
     VITE_APP_GIT_SHA=${GIT_SHA} \
     VITE_APP_DISABLE_SENTRY=true \
     yarn build:app:docker
