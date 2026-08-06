@@ -8,6 +8,9 @@
 
 FROM nginx:stable-alpine-slim
 
+# Copy the custom production Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Copy prebuilt static assets from local build output
 COPY excalidraw-app/build /usr/share/nginx/html
 
