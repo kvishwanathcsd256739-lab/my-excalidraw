@@ -127,7 +127,9 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      sourcemap: true,
+      sourcemap: false,
+      minify: "esbuild",
+      target: "esnext",
       // don't auto-inline small assets (i.e. fonts hosted on CDN)
       assetsInlineLimit: 0,
     },
@@ -320,11 +322,7 @@ export default defineConfig(({ mode }) => {
         minify: true,
       }),
     ],
-    build: {
-      sourcemap: false,
-      minify: "esbuild",
-      target: "esnext",
-    },
+
     publicDir: "../public",
   };
 });
