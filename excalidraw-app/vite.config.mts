@@ -143,17 +143,19 @@ export default defineConfig(({ mode }) => {
       }),
       woff2BrowserPlugin(),
       react(),
-      checker({
-        typescript: true,
-        eslint:
-          envVars.VITE_APP_ENABLE_ESLINT === "false"
-            ? undefined
-            : { lintCommand: 'eslint "./**/*.{js,ts,tsx}"' },
-        overlay: {
-          initialIsOpen: envVars.VITE_APP_COLLAPSE_OVERLAY === "false",
-          badgeStyle: "margin-bottom: 4rem; margin-left: 1rem",
-        },
-      }),
+      envVars.VITE_APP_DISABLE_CHECKER === "true"
+        ? undefined
+        : checker({
+            typescript: true,
+            eslint:
+              envVars.VITE_APP_ENABLE_ESLINT === "false"
+                ? undefined
+                : { lintCommand: 'eslint "./**/*.{js,ts,tsx}"' },
+            overlay: {
+              initialIsOpen: envVars.VITE_APP_COLLAPSE_OVERLAY === "false",
+              badgeStyle: "margin-bottom: 4rem; margin-left: 1rem",
+            },
+          }),
       svgrPlugin(),
       ViteEjsPlugin(),
       VitePWA({
@@ -321,7 +323,7 @@ export default defineConfig(({ mode }) => {
       createHtmlPlugin({
         minify: true,
       }),
-    ],
+    ].filter(Boolean),
 
     publicDir: "../public",
   };
