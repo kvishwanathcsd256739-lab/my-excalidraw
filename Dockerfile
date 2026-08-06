@@ -29,7 +29,60 @@
 # layer size from ~1.1 GB to ~230 MB. The build stage is discarded after
 # the final stage copies the output, so this does not affect the image size.
 # -----------------------------------------------------------------------------
-FROM oci-excalidraw:latest AS build
+FROM --platform=${BUILDPLATFORM} node:20-slim AS build
+
+WORKDIR /opt/node_app
+
+# ── Layer 1: dependency manifests ──────────────────────────────────────────
+# Copy ONLY the files needed to run yarn install.
+# Docker layer cache: this layer is only invalidated when yarn.lock or
+# package.json files change — not when application source code changes.
+# This is the most important optimization for build speed in CI/CD.
+COPY package.json yarn.lock .npmrc ./
+COPY excalidraw-app/package.json ./excalidraw-app/
+COPY packages/common/package.json ./packages/common/
+COPY packages/element/package.json ./packages/element/
+COPY packages/excalidraw/package.json ./packages/excalidraw/
+COPY packages/math/package.json ./packages/math/
+COPY packages/fractional-indexing/package.json ./packages/fractional-indexing/
+COPY packages/laser-pointer/package.json ./packages/laser-pointer/
+COPY packages/utils/package.json ./packages/utils/
+
+# ── Layer 2: install dependencies ──────────────────────────────────────────
+# --frozen-lockfile: fail if yarn.lock is out of sync with package.json
+# --network-timeout: needed for slow CI/CD environments
+# npm_config_target_arch: ensures platform-native binaries (e.g. rollup) are
+# installed for the correct target architecture in cross-platform builds.
+RUN --mount=type=cache,target=/root/.cache/yarn \
+    npm_config_target_arch=${TARGETARCH} \
+    yarn --frozen-lockfile \
+         --network-timeout 600000 \
+         --non-interactive
+
+# ── Layer 3: application source ─────────────────────────────────────────────
+# Copy the rest of the source AFTER yarn install. Changes to source code
+# only invalidate this layer and the build layer — not the install layer.
+COPY . .
+
+# ── Layer 4: build ──────────────────────────────────────────────────────────
+# Build arguments:
+#   NODE_ENV:   set to production for optimized output
+#   GIT_SHA:    passed from CI (e.g. $GITHUB_SHA) for Sentry release tracking
+#               and the version.json file. Falls back to "docker-build".
+ARG NODE_ENV=production
+ARG GIT_SHA=docker-build
+
+# VITE_APP_DISABLE_SENTRY=true: Sentry DSN is hardcoded to excalidraw.com
+# hostnames in sentry.ts — it auto-disables on unknown hosts. Setting this
+# flag explicitly avoids any initialization overhead in Docker builds.
+#
+# VITE_APP_GIT_SHA: used by sentry.ts for release tracking and exposed as
+# window.__EXCALIDRAW_SHA__ for version identification.
+RUN npm_config_target_arch=${TARGETARCH} \
+    NODE_OPTIONS="--max-old-space-size=2048" \
+    VITE_APP_GIT_SHA=${GIT_SHA} \
+    VITE_APP_DISABLE_SENTRY=true \
+    yarn build:app:docker
 
 # -----------------------------------------------------------------------------
 # Stage 2: Serve
@@ -48,7 +101,7 @@ LABEL org.opencontainers.image.title="Excalidraw" \
       org.opencontainers.image.licenses="MIT"
 
 # ── Copy the Vite build output ───────────────────────────────────────────────
-COPY --from=build /usr/share/nginx/html /usr/share/nginx/html
+COPY --from=build /opt/node_app/excalidraw-app/build /usr/share/nginx/html
 
 # ── Replace the default nginx config with our production config ───────────────
 # This is the most critical step: without this, SPA routing breaks (404 on
