@@ -52,7 +52,7 @@ services:
       - "443:443"
     volumes:
       # nginx config (read-only mount — nginx reads this at startup)
-      - ./deploy/nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+      - /opt/excalidraw/nginx-proxy.conf:/etc/nginx/nginx.conf:ro
       # Let's Encrypt certificates (shared with certbot container)
       - certbot-conf:/etc/letsencrypt:ro
       # ACME HTTP challenge webroot (shared with certbot container)

@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Excalidraw-on-AWS: Complete Cloud Engineering Curriculum</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.6;
+      color: #1a1f2c;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Cover Page */
+    .cover-page {
+      height: 95vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      page-break-after: always;
+      padding: 40px 20px;
+      border: 3px solid #2563eb;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .cover-badge {
+      background: #e0e7ff;
+      color: #3730a3;
+      font-weight: 700;
+      font-size: 11pt;
+      padding: 6px 16px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .cover-title {
+      font-size: 28pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin: 0 0 16px 0;
+    }
+
+    .cover-subtitle {
+      font-size: 14pt;
+      font-weight: 400;
+      color: #475569;
+      max-width: 650px;
+      margin: 0 0 40px 0;
+      line-height: 1.5;
+    }
+
+    .cover-meta {
+      font-size: 10pt;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+      width: 80%;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+      color: #0f172a;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 20pt;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 8px;
+      margin-top: 36px;
+      margin-bottom: 18px;
+      page-break-before: always;
+    }
+
+    /* Prevent page break before first h1 */
+    .content > h1:first-child {
+      page-break-before: avoid;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 15pt;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 6px;
+      margin-top: 28px;
+      margin-bottom: 14px;
+      color: #1e293b;
+    }
+
+    h3 {
+      font-size: 12pt;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #334155;
+    }
+
+    p, ul, ol {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 9pt;
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      page-break-inside: avoid;
+      margin: 14px 0;
+      line-height: 1.45;
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, monospace;
+      font-size: 9.5pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      padding: 12px 16px;
+      border-left: 4px solid #2563eb;
+      background: #eff6ff;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      page-break-inside: avoid;
+    }
+
+    .callout-warning, .callout-caution {
+      border-left-color: #d97706;
+      background: #fffbeb;
+    }
+
+    .callout-tip {
+      border-left-color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    .callout-important {
+      border-left-color: #dc2626;
+      background: #fef2f2;
+    }
+
+    blockquote {
+      border-left: 4px solid #94a3b8;
+      background: #f8fafc;
+      margin: 14px 0;
+      padding: 10px 16px;
+      color: #334155;
+      font-style: italic;
+      page-break-inside: avoid;
+    }
+
+    /* Mermaid Diagrams */
+    .mermaid {
+      text-align: center;
+      margin: 20px 0;
+      page-break-inside: avoid;
+      background: #fafafa;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover Page -->
+  <div class="cover-page">
+    <div class="cover-badge">Complete Learning Curriculum</div>
+    <h1 class="cover-title">Excalidraw-on-AWS:<br>Cloud Engineering Guide</h1>
+    <p class="cover-subtitle">
+      A Zero-to-Hero University Course covering AWS EC2, Ubuntu 24.04 LTS, Docker Containerization, Nginx Reverse Proxying, Route 53 DNS, Let's Encrypt TLS/SSL, Architecture Diagrams, Troubleshooting & Interview Preparation
+    </p>
+    <div class="cover-meta">
+      <div><strong>Target Audience:</strong> Computer Science Students</div>
+      <div><strong>Scope:</strong> 20 Comprehensive Parts</div>
+      <div><strong>Format:</strong> Complete Merged Master Edition</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1>Excalidraw-on-AWS: Complete Cloud Engineering Curriculum</h1>
+<p>Welcome to the comprehensive, university-level Cloud Engineering Learning Guide based on the actual deployment of <strong>Excalidraw</strong> on <strong>Amazon Web Services (AWS)</strong> using EC2, Ubuntu 24.04 LTS, Docker, Nginx reverse proxying, Let&#39;s Encrypt TLS certificates, and AWS ECR.</p>
+<hr>
+<h2>🎯 Curriculum Goal</h2>
+<p>This guide is written for a first-year Computer Science student with basic programming knowledge and <strong>zero</strong> prior experience in Linux system administration, AWS cloud infrastructure, networking, Docker containerization, or SSL/TLS security.</p>
+<p>After completing this curriculum, you will be able to explain <strong>every component</strong>, <strong>command</strong>, <strong>configuration</strong>, and <strong>troubleshooting step</strong> of a production web application deployment to anyone—without needing AI assistance.</p>
+<hr>
+<h2>📚 Curriculum Navigation</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Module File</th>
+<th align="left">Chapter / Scope</th>
+<th align="left">Core Topics Covered</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/00-index.md">00-index.md</a></strong></td>
+<td align="left"><strong>Course Overview</strong></td>
+<td align="left">Table of Contents, Prerequisites, How to Use This Curriculum</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/01-big-picture-and-aws.md">01-big-picture-and-aws.md</a></strong></td>
+<td align="left"><strong>Parts 1 &amp; 2</strong></td>
+<td align="left">The Big Picture of Cloud Engineering, History of Web Hosting, What is AWS, Cloud vs On-Premises</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/02-servers-ec2-linux.md">02-servers-ec2-linux.md</a></strong></td>
+<td align="left"><strong>Parts 3, 4 &amp; 5</strong></td>
+<td align="left">Physical vs Cloud Servers, AWS EC2 (<code>t2.micro</code>), Ubuntu 24.04 LTS, Terminal, SSH, File Permissions &amp; Linux Commands</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/03-git-docker.md">03-git-docker.md</a></strong></td>
+<td align="left"><strong>Parts 6 &amp; 7</strong></td>
+<td align="left">Git &amp; GitHub Version Control, Docker Engine, Containers vs VMs, Docker Compose, Networks, Volumes &amp; Health Checks</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/04-nginx-dns-ssl.md">04-nginx-dns-ssl.md</a></strong></td>
+<td align="left"><strong>Parts 8, 9 &amp; 10</strong></td>
+<td align="left">Nginx Reverse Proxy, WebSockets, Domain Names, DNS A-records, HTTPS, TLS &amp; Let&#39;s Encrypt Certbot</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/05-deployment-and-mistakes.md">05-deployment-and-mistakes.md</a></strong></td>
+<td align="left"><strong>Parts 11 &amp; 12</strong></td>
+<td align="left">Chronological Deployment Walkthrough (<code>setup.sh</code>, <code>certbot-init.sh</code>, <code>deploy.sh</code>) &amp; Root-Cause Troubleshooting Guide</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/06-mental-models-and-diagrams.md">06-mental-models-and-diagrams.md</a></strong></td>
+<td align="left"><strong>Parts 13 &amp; 14</strong></td>
+<td align="left">Extended Real-World Analogy (The Apartment Building) &amp; Mermaid Architectural / Request Flow Diagrams</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/07-roadmap-and-vocabulary.md">07-roadmap-and-vocabulary.md</a></strong></td>
+<td align="left"><strong>Parts 15 &amp; 16</strong></td>
+<td align="left">Zero-to-Hero Cloud Engineering Career Roadmap &amp; 120+ Deployment Vocabulary Dictionary</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/08-interview-prep.md">08-interview-prep.md</a></strong></td>
+<td align="left"><strong>Part 17</strong></td>
+<td align="left">60 Deep Technical Interview Questions &amp; Answers (25 Beginner, 25 Intermediate, 10 Scenario-Based)</td>
+</tr>
+<tr>
+<td align="left"><strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/09-industry-and-reflection.md">09-industry-and-reflection.md</a></strong></td>
+<td align="left"><strong>Parts 18, 19 &amp; 20</strong></td>
+<td align="left">Industry Architectures (Netflix, Uber, GitHub), Personal Self-Reflection, &amp; Transformation Story</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🛠️ The Deployment Architecture at a Glance</h2>
+<p>The curriculum explains this exact production architecture built during our deployment:</p>
+<pre><code>Internet Users (HTTPS:443 / HTTP:80)
+         │
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│ AWS EC2 Instance (t2.micro — Ubuntu 24.04 LTS)          │
+│ Public Elastic IP: static A-record                      │
+│ Firewall (UFW): Ports 22 (SSH), 80 (HTTP), 443 (HTTPS)   │
+│                                                         │
+│ ┌─────────────────────────────────────────────────────┐ │
+│ │ Docker Engine &amp; Docker Compose                      │ │
+│ │                                                     │ │
+│ │  ┌─────────────────┐       ┌─────────────────────┐  │ │
+│ │  │  nginx-proxy    │ ────► │  excalidraw-app     │  │ │
+│ │  │  (:80, :443)    │       │  (ECR SPA container)│  │ │
+│ │  └────────┬────────┘       └─────────────────────┘  │ │
+│ │           │                                         │ │
+│ │           └──────────────► ┌─────────────────────┐  │ │
+│ │                            │ excalidraw-room     │  │ │
+│ │                            │ (WebSocket relay)   │  │ │
+│ │                            └─────────────────────┘  │ │
+│ │  ┌─────────────────┐                                │ │
+│ │  │ certbot renew   │ (Auto-renews certs every 12h)  │ │
+│ │  └─────────────────┘                                │ │
+│ └─────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>💡 Key Pedagogical Principles</h2>
+<ol>
+<li><strong>Why Before How</strong>: We never teach a tool or command until you understand the exact problem it exists to solve.</li>
+<li><strong>Zero Assumptions</strong>: Every jargon term is defined immediately upon first use.</li>
+<li><strong>Empirical Grounding</strong>: Every command, file path, error message, and fix matches the real deployment scripts (<code>deploy/setup.sh</code>, <code>deploy/certbot-init.sh</code>, <code>deploy/deploy.sh</code>, <code>deploy/docker-compose.ec2.yml</code>, <code>deploy/nginx-proxy.conf</code>).</li>
+<li><strong>Active Recall</strong>: Every module ends with a mini-quiz and practical exercises to lock in your understanding.</li>
+</ol>
+<p>Let&#39;s begin! Head over to <strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/01-big-picture-and-aws.md">01-big-picture-and-aws.md</a></strong> to start Part 1.</p>
+<hr>
+<h1>Module 1: The Big Picture &amp; Understanding AWS</h1>
+<hr>
+<h2>PART 1: The Big Picture of Web Hosting &amp; Cloud Engineering</h2>
+<h3>1.1 What is Cloud Engineering?</h3>
+<p><strong>Cloud Engineering</strong> is the practice of designing, building, deploying, and maintaining computer software and systems on remote server networks managed by specialized cloud providers (like Amazon Web Services, Google Cloud, or Microsoft Azure), rather than on physical computers owned directly by your company.</p>
+<p>To understand Cloud Engineering, think of the software you write on your laptop. When you double-click an application or open a webpage on <code>localhost</code>, that software is running on <strong>your local machine</strong>. If you shut your laptop screen, turn off your Wi-Fi, or put your laptop in a backpack, nobody else on Earth can open your application.</p>
+<p>Cloud Engineering is how we take software out of our personal laptops and put it onto computers connected to high-speed internet 24 hours a day, 7 days a week, 365 days a year, so that millions of users across the globe can access it simultaneously.</p>
+<hr>
+<h3>1.2 How Applications Were Hosted Before Cloud Computing (The On-Premises Era)</h3>
+<p>Twenty years ago (in the late 1990s and early 2000s), if a company wanted to run a website, they had to manage their own <strong>on-premises (on-prem)</strong> physical hardware.</p>
+<p>Here is step-by-step how a tech company deployed a web app in the year 2002:</p>
+<pre><code>[1. Order Hardware] ──► [2. Wait 6 Weeks] ──► [3. Rack &amp; Cable] ──► [4. Install OS] ──► [5. Deploy Code]
+  Dell/HP Server          Shipping/Customs       Datacenter Cage       Linux/Windows       FTP / Manual Copy
+</code></pre>
+<ol>
+<li><strong>Order Hardware</strong>: The company had to order expensive physical computer towers or rack-mounted server hardware from manufacturers like Dell, HP, or IBM. A single business server could easily cost $10,000 to $50,000 upfront.</li>
+<li><strong>Wait for Delivery</strong>: Shipping, customs, and delivery took anywhere from 3 weeks to 2 months.</li>
+<li><strong>Lease Datacenter Space</strong>: Companies had to rent space in a dedicated physical facility called a <strong>datacenter</strong> (or build their own server room with specialized industrial air conditioning and backup diesel generators).</li>
+<li><strong>Physical Installation (Racking and Stacking)</strong>: System administrators had to physically drive to the datacenter, mount the heavy metal server boxes into 19-inch steel racks with screwdrivers, plug in power cables, and run Ethernet cables to networking switches.</li>
+<li><strong>Operating System Setup</strong>: Admins manually inserted a CD-ROM or USB drive into the server box to install an operating system like Linux or Windows Server.</li>
+<li><strong>Deployment</strong>: Developers used legacy tools like FTP (File Transfer Protocol) to copy raw files directly onto the server&#39;s hard drive.</li>
+</ol>
+<hr>
+<h3>1.3 The Fatal Problems of Pre-Cloud Infrastructure</h3>
+<p>This traditional hardware-first approach had massive structural flaws:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Problem</th>
+<th align="left">What Happened in Real Life</th>
+<th align="left">What Would Break</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Enormous Upfront Capital (CapEx)</strong></td>
+<td align="left">Starting a basic tech business required $100,000+ in hardware purchases before serving a single customer.</td>
+<td align="left">College students and solo developers were completely priced out of building internet companies.</td>
+</tr>
+<tr>
+<td align="left"><strong>Capacity Guessing &amp; Over-provisioning</strong></td>
+<td align="left">If you expected 10,000 users, you had to purchase 10 servers. If only 200 users showed up, 90% of your money was completely wasted.</td>
+<td align="left">Companies burned millions of dollars on idle silicon sitting in air-conditioned rooms doing zero work.</td>
+</tr>
+<tr>
+<td align="left"><strong>Traffic Spikes &amp; Server Crashes</strong></td>
+<td align="left">If your product went viral on television or news, 50,000 users tried to connect at once. Your 2 servers ran out of CPU/RAM and crashed.</td>
+<td align="left">The website went completely offline. You couldn&#39;t buy and install new hardware fast enough (it took weeks).</td>
+</tr>
+<tr>
+<td align="left"><strong>Physical Disasters &amp; Outages</strong></td>
+<td align="left">A thunderstorm cut power to the building, a backhoe cut the fiber optic line in the street, or an air conditioner failed and melted CPUs.</td>
+<td align="left">Your business stopped functioning instantly unless you owned a second redundant physical datacenter in another city.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Real-World Story: The Black Friday Catastrophe</strong><br>In 2004, retail websites frequently crashed on Black Friday because millions of shoppers rushed to the site simultaneously. E-commerce companies had to buy hundreds of expensive servers in August just to handle 48 hours of heavy holiday traffic in November—leaving those servers sitting completely empty and idle for the remaining 10 months of the year.</p>
+</blockquote>
+<hr>
+<h3>1.4 The Paradigm Shift: Why Cloud Computing Took Over</h3>
+<p>Cloud computing solved all of these problems by transforming <strong>hardware into software</strong>.</p>
+<p>Instead of buying physical boxes, cloud providers built massive data centers filled with hundreds of thousands of servers worldwide. They wrapped those servers in software APIs (Application Programming Interfaces). Now, instead of picking up a screwdriver, a developer could send an HTTP request or click a button on a web dashboard to rent 1% of a server for $0.01 per hour.</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                          THE CLOUD PARADIGM                            │
+│                                                                        │
+│   Old World (On-Premises):   Buy Hardware ──► Pay $50,000 Upfront       │
+│   New World (Cloud):         Rent Utility  ──► Pay $0.01/Hour (API)     │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>PART 2: What is AWS (Amazon Web Services)?</h2>
+<h3>2.1 AWS Explained Like You Are 10 Years Old</h3>
+<p>Imagine you want to build a massive, intricate Lego castle with motor-powered drawbridges, working lights, and water fountains.</p>
+<ul>
+<li><strong>Option A (The Old Way)</strong>: You have to build a plastics factory, purchase raw petroleum, build injection molds, manufacture every plastic Lego brick yourself, construct a power plant to run the motors, and dig a canal for the water.</li>
+<li><strong>Option B (The AWS Way)</strong>: You go to a giant toy rental shop. The shop has infinite Lego bricks of every shape, size, and color already manufactured. You pick out 50 bricks, build your castle for two hours, pay $0.25 for the time you used them, and return them when you&#39;re done.</li>
+</ul>
+<p><strong>AWS (Amazon Web Services)</strong> is that giant digital rental shop. AWS owns massive buildings across the globe packed with millions of high-performance computers, drives, optical fibers, and networking gear. AWS lets developers rent compute power, file storage, database capacity, and networking tools over the internet in seconds.</p>
+<hr>
+<h3>2.2 Why Did Amazon Create AWS?</h3>
+<p>In the early 2000s, Amazon.com was growing rapidly as an online bookstore and retailer. Every time an Amazon engineering team wanted to launch a new feature (like customer reviews or 1-Click checkout), they spent 70% of their time building infrastructure—setting up databases, configuring servers, and wiring networks—and only 30% actually writing application code.</p>
+<p>Amazon realized:</p>
+<ol>
+<li>They had accidentally built world-class internal tools to automate server provisioning.</li>
+<li>Every other company on Earth suffered from the exact same infrastructure headache.</li>
+</ol>
+<p>In 2006, Amazon launched AWS, publicly offering services like <strong>S3</strong> (Simple Storage Service for files) and <strong>EC2</strong> (Elastic Compute Cloud for virtual servers). Today, AWS generates over $90 Billion per year and powers over 30% of the entire public cloud market.</p>
+<hr>
+<h3>2.3 Why Startups and Tech Giants Use AWS</h3>
+<h4>Why Startups (like early Airbnb or Instagram) Use AWS:</h4>
+<ul>
+<li><strong>Zero Upfront Cost</strong>: A student can launch an EC2 server for $0/month on the AWS Free Tier.</li>
+<li><strong>Speed to Market</strong>: You can launch a global server infrastructure in 30 seconds instead of 3 months.</li>
+<li><strong>Focus on Core Product</strong>: Founders focus on building app features rather than fixing power supplies or replacing fried hard drives.</li>
+</ul>
+<h4>Why Tech Giants (like Netflix) Use AWS:</h4>
+<ul>
+<li><strong>Infinite Elastic Scale</strong>: Netflix streams video to hundreds of millions of screens simultaneously. On Friday night at 8 PM, streaming traffic skyrockets. On AWS, Netflix automatically boots up tens of thousands of extra virtual servers in minutes, then automatically shuts them down at 3 AM when people go to sleep—paying only for the exact minutes used.</li>
+<li><strong>Global Reach</strong>: AWS has datacenters in North America, Europe, Asia, South America, Australia, and Africa. Netflix can host videos close to users in Tokyo or London to eliminate buffering delays.</li>
+</ul>
+<hr>
+<h3>2.4 The Fundamental Request Flow: Developer to User</h3>
+<p>Here is how code flows from your hands to a user&#39;s screen in our Excalidraw architecture on AWS:</p>
+<pre><code>┌──────────────┐
+│  Developer   │ (You write code on your laptop)
+└──────┬───────┘
+       │  1. Push code / Build Docker Image
+       ▼
+┌──────────────┐
+│   AWS ECR    │ (Amazon Elastic Container Registry — Stores built image)
+└──────┬───────┘
+       │  2. Pull image over private AWS network
+       ▼
+┌──────────────┐
+│   AWS EC2    │ (Virtual Server running Ubuntu 24.04 LTS)
+│ ┌──────────┐ │
+│ │  Docker  │ │  3. Runs Nginx + Excalidraw SPA + Socket.IO Relay
+│ └──────────┘ │
+└──────▲───────┘
+       │  4. HTTPS Requests over Port 443
+┌──────┴───────┘
+│ End-User     │ (Visits draw.yourdomain.com in browser)
+└──────────────┘
+</code></pre>
+<hr>
+<h2>🔒 Chapter 1 Mini-Quiz</h2>
+<p>Test your understanding before proceeding!</p>
+<ol>
+<li><p><strong>What was the primary financial risk of hosting web apps on-premises before cloud computing?</strong></p>
+<ul>
+<li>A) High monthly domain renewal fees</li>
+<li>B) Massive upfront capital expenditure (CapEx) on physical servers that might go unused</li>
+<li>C) License fees paid to Docker</li>
+<li>D) Paying for electricity in foreign countries</li>
+</ul>
+</li>
+<li><p><strong>Why does Netflix use AWS instead of buying its own servers?</strong></p>
+<ul>
+<li>A) AWS makes movies for Netflix</li>
+<li>B) Netflix doesn&#39;t know how to program</li>
+<li>C) Netflix needs elastic scale to dynamically add servers during peak evening traffic and remove them at night</li>
+<li>D) Physical servers cannot play video files</li>
+</ul>
+</li>
+<li><p><strong>In our Excalidraw architecture, what role does AWS ECR play?</strong></p>
+<ul>
+<li>A) It serves HTML directly to web browsers</li>
+<li>B) It acts as a secure storage registry for our packaged Docker container images</li>
+<li>C) It issues Let&#39;s Encrypt SSL certificates</li>
+<li>D) It assigns domain names to IP addresses</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-C, 3-B)</em></p>
+<hr>
+<p>learn about Servers, AWS EC2, and Linux Administration!</p>
+<hr>
+<h1>Module 2: Servers, AWS EC2 &amp; Linux Administration</h1>
+<hr>
+<h2>PART 3: Understanding Servers &amp; Hardware Components</h2>
+<h3>3.1 What is a Server?</h3>
+<p>A <strong>server</strong> is simply a computer that is connected to a network and configured to receive incoming network requests, process them, and return responses back to the requester (the client).</p>
+<p>There is no magical fairy dust inside a server. At its core, a server contains the exact same hardware components as your personal laptop or smartphone:</p>
+<ul>
+<li>A Central Processing Unit (<strong>CPU</strong>) to compute logic</li>
+<li>Random Access Memory (<strong>RAM</strong>) to hold active execution state</li>
+<li>A Hard Drive or Solid State Drive (<strong>Disk Storage</strong>) to save persistent files</li>
+<li>A Network Interface Card (<strong>NIC</strong>) to talk to the internet</li>
+</ul>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        SERVER VS LAPTOP COMPARISON                     │
+│                                                                        │
+│   Feature             Personal Laptop           Cloud Server (EC2)     │
+│   ──────────────────────────────────────────────────────────────────   │
+│   Display             Built-in Screen           Headless (No monitor)  │
+│   Power               Battery / Shuts off       Dual redundant PSUs    │
+│   IP Address          Changes (Dynamic)         Static (Elastic IP)    │
+│   Operating System    Windows / macOS           Ubuntu Linux (CLI)     │
+│   Uptime              Closes when folded        99.99% (Always On)     │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>3.2 Why Can&#39;t You Host Excalidraw on Your Personal Laptop?</h3>
+<p>Beginners often ask: <em>&quot;I have Node.js running on my laptop at <code>localhost:3000</code>. Why can&#39;t I just give my friends my IP address and host my website from home?&quot;</em></p>
+<p>Here are five technical reasons why home hosting fails:</p>
+<ol>
+<li><strong>Dynamic IP Addresses &amp; CGNAT</strong>: Home Internet Service Providers (ISPs like Comcast, AT&amp;T, or Spectrum) change your home IP address frequently. Furthermore, most ISPs use CGNAT (Carrier-Grade NAT), sharing one public IP among hundreds of homes. Outside users cannot reach your specific laptop.</li>
+<li><strong>Blocked Inbound Ports</strong>: Residential ISPs explicitly block incoming traffic on Port 80 (HTTP) and Port 443 (HTTPS) to prevent consumers from running servers on home connections.</li>
+<li><strong>Power &amp; Sleep Modes</strong>: If your laptop goes to sleep, shuts down to install updates, or loses Wi-Fi connection, your website goes completely offline worldwide.</li>
+<li><strong>Asymmetric Upstream Bandwidth</strong>: Home internet gives you fast download speeds (e.g., 300 Mbps) but very slow upload speeds (e.g., 10 Mbps). If 50 users try to download your Excalidraw website assets simultaneously, your home upload link saturates and freezes.</li>
+<li><strong>No ECC Memory</strong>: Home laptops use standard RAM. If a cosmic ray or static charge flips a bit in RAM, your laptop blue-screens or crashes. Enterprise servers use <strong>ECC (Error-Correcting Code)</strong> RAM to detect and fix bit flips automatically.</li>
+</ol>
+<hr>
+<h3>3.3 The Core Hardware Resources Deep Dive</h3>
+<p>Let&#39;s understand the hardware specs of our deployment&#39;s server (<strong>AWS <code>t2.micro</code></strong>):</p>
+<h4>1. CPU (Central Processing Unit) — The Server&#39;s Brain</h4>
+<ul>
+<li><strong>What it is</strong>: The silicon microchip that executes code instructions step-by-step.</li>
+<li><strong>t2.micro Allocation</strong>: 1 vCPU (Virtual CPU core running on an Intel Xeon processor).</li>
+<li><strong>Analogy</strong>: The chef in a kitchen. The faster the chef, the quicker orders are cooked.</li>
+<li><strong>What breaks without it</strong>: If CPU usage hits 100%, incoming requests queue up, responses lag, and the website stops loading.</li>
+</ul>
+<h4>2. RAM (Random Access Memory) — The Short-Term Scratchpad</h4>
+<ul>
+<li><strong>What it is</strong>: Ultra-fast electronic memory where running programs (Docker containers, Node.js runtime, Nginx) store active data.</li>
+<li><strong>t2.micro Allocation</strong>: 1 GiB (Gibibyte) = 1,024 Megabytes.</li>
+<li><strong>Analogy</strong>: The countertop space in the kitchen. If the countertop is full, the chef cannot chop veggies or assemble dishes.</li>
+<li><strong>What breaks without it (Out-Of-Memory / OOM)</strong>: If programs demand more RAM than the 1 GiB available, the Linux kernel triggers the <strong>OOM Killer</strong> process, instantly terminating your application to prevent the entire system from freezing.</li>
+</ul>
+<h4>3. Disk Storage (AWS EBS) — The Long-Term Filing Cabinet</h4>
+<ul>
+<li><strong>What it is</strong>: Non-volatile storage (Solid-State Drive) that retains files even when power is turned off.</li>
+<li><strong>Our Setup</strong>: 30 GB AWS <strong>gp3 (General Purpose SSD)</strong> volume.</li>
+<li><strong>Analogy</strong>: The walk-in refrigerator where raw ingredients and physical documents are safely locked away.</li>
+<li><strong>What breaks without it</strong>: If disk space reaches 100%, log files cannot be written, Docker cannot pull new images, and databases crash.</li>
+</ul>
+<h4>4. Network Bandwidth &amp; IP Addresses — The Delivery Roads</h4>
+<ul>
+<li><strong>Public IP</strong>: A unique numerical street address (e.g., <code>54.210.45.12</code>) that allows any computer on the global internet to find your server.</li>
+<li><strong>Private IP</strong>: An internal address (e.g., <code>172.31.16.4</code>) used exclusively for servers within the same AWS private virtual network to talk to each other without touching the public internet.</li>
+</ul>
+<hr>
+<h2>PART 4: AWS EC2 (Elastic Compute Cloud)</h2>
+<h3>4.1 What Exactly is EC2?</h3>
+<p><strong>AWS EC2 (Elastic Compute Cloud)</strong> is a service that provides resizable <strong>virtual machines (VMs)</strong> on demand.</p>
+<p>When you rent an EC2 instance, AWS does not ship a physical computer to your house. Instead, AWS takes a massive physical server box (with 128 physical CPUs and 512 GB of RAM) in one of their data centers, runs a software manager called a <strong>hypervisor</strong>, and slices off a portion of that hardware for you:</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                   PHYSICAL HOST IN AWS DATA CENTER                     │
+│                                                                        │
+│  ┌─────────────────────────┐  ┌─────────────────────────┐  ┌─────────┐ │
+│  │ EC2 Instance 1          │  │ EC2 Instance 2 (YOURS)  │  │ EC2 3   │ │
+│  │ Customer A (8 vCPUs)    │  │ t2.micro (1 vCPU, 1GB) │  │ ...     │ │
+│  └─────────────────────────┘  └─────────────────────────┘  └─────────┘ │
+│ ══════════════════════════════════════════════════════════════════════ │
+│                      AWS NITRO / KVM HYPERVISOR                        │
+│ ══════════════════════════════════════════════════════════════════════ │
+│              PHYSICAL INTEL XEON HARDWARE (CPUs / RAM / NICs)          │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>4.2 Why Ubuntu 24.04 LTS?</h3>
+<p>When creating an EC2 instance, you must select an <strong>AMI (Amazon Machine Image)</strong>, which acts as the operating system template. We selected <strong>Ubuntu Server 24.04 LTS</strong>:</p>
+<ul>
+<li><strong>Linux</strong>: Linux is open-source, lightweight, incredibly stable, and consumes minimal system resources (unlike Windows Server, which requires 2+ GB of RAM just to draw its graphical user interface).</li>
+<li><strong>Ubuntu</strong>: The world&#39;s most popular Linux distribution for developers, providing the vast <code>apt</code> software repository.</li>
+<li><strong>24.04</strong>: The release year (2024) and month (April).</li>
+<li><strong>LTS (Long-Term Support)</strong>: Canonical guarantees security updates, bug fixes, and maintenance for <strong>5 years</strong> free of charge.</li>
+</ul>
+<hr>
+<h3>4.3 Step-by-Step EC2 Launch Configuration Breakdown</h3>
+<p>Here is what every setting meant when launching our server:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Field in AWS Console</th>
+<th align="left">Value Chosen</th>
+<th align="left">Technical Explanation &amp; Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Instance Name</strong></td>
+<td align="left"><code>excalidraw-prod</code></td>
+<td align="left">A human-readable label to identify our production server in the AWS list.</td>
+</tr>
+<tr>
+<td align="left"><strong>AMI (OS)</strong></td>
+<td align="left"><code>Ubuntu 24.04 LTS</code></td>
+<td align="left">Operating system pre-installed onto the virtual hard drive.</td>
+</tr>
+<tr>
+<td align="left"><strong>Instance Type</strong></td>
+<td align="left"><code>t2.micro</code></td>
+<td align="left">Hardware allocation: 1 vCPU, 1 GB RAM. Eligible for AWS Free Tier (750 hours/month free).</td>
+</tr>
+<tr>
+<td align="left"><strong>Key Pair</strong></td>
+<td align="left"><code>excalidraw-key.pem</code></td>
+<td align="left">RSA Cryptographic key pair. AWS places the public key on the server; you download the private key (<code>.pem</code>) to authenticate SSH connections safely without passwords.</td>
+</tr>
+<tr>
+<td align="left"><strong>Network Settings</strong></td>
+<td align="left">VPC Default</td>
+<td align="left">Virtual Private Cloud subnet placement.</td>
+</tr>
+<tr>
+<td align="left"><strong>Security Group</strong></td>
+<td align="left"><code>excalidraw-sg</code></td>
+<td align="left">Virtual Firewall controlling inbound and outbound network traffic rules (Ports 22, 80, 443).</td>
+</tr>
+<tr>
+<td align="left"><strong>Storage</strong></td>
+<td align="left">30 GB <code>gp3</code> SSD</td>
+<td align="left">Elastic Block Store volume size. 30 GB is 100% free under the AWS 12-month free tier.</td>
+</tr>
+<tr>
+<td align="left"><strong>IAM Instance Role</strong></td>
+<td align="left"><code>excalidraw-ec2-role</code></td>
+<td align="left">Grants the server permission to call AWS ECR APIs securely without hardcoding secret keys on disk.</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>4.4 Security Group Rules: Firewall Security</h3>
+<p>A <strong>Security Group</strong> acts as a strict guard at the door of your EC2 instance. By default, <strong>all incoming traffic is blocked</strong> unless explicitly allowed:</p>
+<pre><code>                     SECURITY GROUP (excalidraw-sg)
+                              ┌──────────┐
+  Port 22 (SSH) ────────────► │ ALLOWED  │ ──► Admin Access (My IP Only)
+                              ├──────────┤
+  Port 80 (HTTP) ───────────► │ ALLOWED  │ ──► ACME Challenge &amp; Redirect (0.0.0.0/0)
+                              ├──────────┤
+  Port 443 (HTTPS) ─────────► │ ALLOWED  │ ──► Production Traffic (0.0.0.0/0)
+                              ├──────────┤
+  Port 3306 (MySQL) ────────► │ BLOCKED! │ ──► Dropped instantly
+                              └──────────┘
+</code></pre>
+<div class="callout callout-warning"><strong>Warning:</strong> Never set Port 22 (SSH) source to <code>0.0.0.0/0</code> (Everywhere). Automated botnet scanners constantly brute-force open SSH ports across the entire internet. Set SSH to <strong>My IP</strong> only!</div>
+<hr>
+<h3>4.5 Elastic IP Allocation</h3>
+<p>When you launch an EC2 instance, AWS assigns a <strong>Public IP</strong>. However, if you stop and restart the instance, AWS reclaims that IP and assigns a totally new one!</p>
+<p>To fix this, we allocated an <strong>Elastic IP</strong>: a permanent, static IPv4 address reserved for your AWS account. We associated it with <code>excalidraw-prod</code>. Now, even if the EC2 instance reboots 100 times, its public IP address never changes, keeping our DNS A-record pointing to the right place.</p>
+<hr>
+<h2>PART 5: Linux Administration &amp; Commands Deep Dive</h2>
+<h3>5.1 The Terminal, Shell, and SSH</h3>
+<p>Since our cloud server has no monitor or mouse, we interact with it through text using the <strong>CLI (Command Line Interface)</strong>:</p>
+<ul>
+<li><strong>Terminal</strong>: The text window program running on your laptop.</li>
+<li><strong>Shell (Bash)</strong>: The command interpreter running on Ubuntu that reads your typed text (e.g. <code>ls</code>, <code>cd</code>, <code>docker</code>) and translates it into kernel operations.</li>
+<li><strong>SSH (Secure Shell)</strong>: An encrypted network protocol operating on Port 22 that securely connects your local terminal to the remote server&#39;s shell.</li>
+</ul>
+<pre><code class="language-bash"># How we SSH into our server:
+chmod 400 ~/Downloads/excalidraw-key.pem
+ssh -i ~/Downloads/excalidraw-key.pem ubuntu@54.210.45.12
+</code></pre>
+<hr>
+<h3>5.2 Linux File Permissions &amp; Superuser Privileges</h3>
+<p>Linux is a multi-user operating system with strict access controls.</p>
+<h4>The <code>root</code> User vs <code>ubuntu</code> User</h4>
+<ul>
+<li><code>ubuntu</code>: Standard unprivileged user account. Can read most files but cannot install software or modify system settings.</li>
+<li><code>root</code>: The absolute superuser with god-mode control over the entire operating system.</li>
+<li><code>sudo</code> (SuperUser DO): A command that allows the <code>ubuntu</code> user to execute a single command with root privileges.</li>
+</ul>
+<h4>Understanding Permission Strings (e.g., <code>-rw-r--r--</code> or <code>drwxr-xr-x</code>)</h4>
+<p>Every file and directory has 9 permission bits divided into three groups:</p>
+<pre><code> ┌─ Directory flag (&#39;d&#39; = directory, &#39;-&#39; = regular file)
+ │
+ │  ┌── Owner permissions (User)
+ │  │      ┌── Group permissions (Group)
+ │  │      │      ┌── Others permissions (World)
+ ▼  ▼      ▼      ▼
+ d r w x  r - x  r - x   (Octal: 755)
+   │ │ │  │   │  │   │
+   │ │ │  │   │  └─ Read (4)
+   │ │ │  │   └──── Execute (1)
+   │ │ │  └──────── Read (4)
+   │ │ └─────────── Execute (1)
+   │ └────────────── Write (2)
+   └──────────────── Read (4)
+</code></pre>
+<ul>
+<li><strong>Read (<code>r</code>)</strong> = 4 points: Ability to view file content or list directory files.</li>
+<li><strong>Write (<code>w</code>)</strong> = 2 points: Ability to modify/delete file content or create files in directory.</li>
+<li><strong>Execute (<code>x</code>)</strong> = 1 point: Ability to execute a file as a program or <code>cd</code> into a directory.</li>
+</ul>
+<pre><code class="language-bash"># Granting permission examples:
+chmod 400 key.pem       # Owner: Read-only (4+0+0 = 4). Group: None. Others: None. (Required by SSH)
+chmod +x setup.sh       # Adds Execute permission so setup.sh can be run as a script.
+chown -R ubuntu:ubuntu /opt/excalidraw # Recursively changes file ownership to &#39;ubuntu&#39; user and group.
+</code></pre>
+<hr>
+<h3>5.3 Linux Filesystem Hierarchy Standard (FHS)</h3>
+<p>Unlike Windows (which uses drive letters like <code>C:\</code> and <code>D:\</code>), Linux uses a single root directory tree starting at <code>/</code>:</p>
+<pre><code>/ (Root Directory)
+├── bin/          ← Essential command binaries (cat, ls, cp)
+├── etc/          ← System configuration files (nginx.conf, ufw configs)
+├── home/
+│   └── ubuntu/   ← Default home folder for the &#39;ubuntu&#39; user (~/)
+├── opt/          ← Reserved for optional/third-party add-on software packages
+│   └── excalidraw/  ← OUR DEPLOYMENT ROOT LOCATION!
+│       ├── repo/
+│       ├── logs/
+│       └── certbot/
+├── var/
+│   ├── log/      ← System log files
+│   └── www/      ← Web files (Certbot ACME challenge)
+└── tmp/          ← Temporary storage cleared on reboot
+</code></pre>
+<hr>
+<h3>5.4 Deconstructing Every Command in <code>deploy/setup.sh</code></h3>
+<p>When we executed <code>sudo bash deploy/setup.sh</code>, here is precisely what happened under the hood:</p>
+<pre><code class="language-bash"># 1. Update APT Package Index
+apt-get update -qq
+# WHY: Downloads the latest list of available software packages and versions from Ubuntu mirrors.
+
+# 2. Install Required Base Utilities
+apt-get install -y ca-certificates curl fail2ban git jq ufw
+# WHY:
+#   ca-certificates: Enables validating SSL/TLS security certificates.
+#   curl / wget: Downloads files over HTTP/HTTPS from the terminal.
+#   fail2ban: Scans logs and bans IP addresses that repeatedly fail SSH password logins.
+#   git: Source control software to clone our Excalidraw repo.
+#   jq: Command-line JSON processor for reading Docker/AWS configs.
+#   ufw: Uncomplicated Firewall command-line frontend.
+
+# 3. Create 2 GB Swap File (CRITICAL FOR t2.micro)
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo &#39;/swapfile none swap sw 0 0&#39; &gt;&gt; /etc/fstab
+</code></pre>
+<blockquote>
+<p><strong>Why Swap File is Mandatory on t2.micro</strong>:<br>Since our <code>t2.micro</code> server has only <strong>1 GB of physical RAM</strong>, running Nginx, Docker Engine, Certbot, and Excalidraw simultaneously can push RAM usage above 1,024 MB.<br><strong>Swap</strong> creates virtual memory on the hard drive (EBS SSD). When physical RAM fills up, Linux temporarily moves inactive memory pages to disk space instead of crashing the server with an OOM error!</p>
+</blockquote>
+<pre><code class="language-bash"># 4. Configure UFW Firewall
+ufw default deny incoming  # Block everything by default
+ufw default allow outgoing # Allow server to talk to internet
+ufw allow 22/tcp          # Allow SSH admin port
+ufw allow 80/tcp          # Allow HTTP port
+ufw allow 443/tcp         # Allow HTTPS port
+ufw --force enable        # Turn firewall on
+</code></pre>
+<hr>
+<h2>🔒 Chapter 2 Mini-Quiz</h2>
+<ol>
+<li><p><strong>Why does an SSH client reject a private key file (<code>key.pem</code>) if permissions are set to <code>777</code> (<code>-rwxrwxrwx</code>)?</strong></p>
+<ul>
+<li>A) Because 777 makes the key file run as a virus</li>
+<li>B) SSH enforces strict security rules requiring private keys to be unreadable by other system users (permission <code>400</code>)</li>
+<li>C) Ubuntu 24.04 cannot read files with 7s</li>
+<li>D) 777 deletes the key file automatically</li>
+</ul>
+</li>
+<li><p><strong>What critical role does a 2 GB Swap file play on an AWS <code>t2.micro</code> instance?</strong></p>
+<ul>
+<li>A) It speeds up CPU calculations by 200%</li>
+<li>B) It provides emergency virtual RAM on the hard drive to prevent Out-Of-Memory (OOM) crashes when physical RAM (1 GB) fills up</li>
+<li>C) It stores SSL certificates safely</li>
+<li>D) It bypasses UFW firewall rules</li>
+</ul>
+</li>
+<li><p><strong>In the Linux directory hierarchy, why was <code>/opt/excalidraw/</code> chosen as our application directory rather than <code>/home/ubuntu/</code>?</strong></p>
+<ul>
+<li>A) Linux forbids creating directories in <code>/home</code></li>
+<li>B) According to Linux FHS standards, <code>/opt</code> is dedicated to system-wide standalone third-party software packages and services</li>
+<li>C) <code>/opt</code> has faster hard drives than <code>/home</code></li>
+<li>D) Docker containers can only read files inside <code>/opt</code></li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>master Git source control and Docker containerization!</p>
+<hr>
+<h1>Module 3: Git, GitHub &amp; Docker Containerization</h1>
+<hr>
+<h2>PART 6: Source Control with Git &amp; GitHub</h2>
+<h3>6.1 Why Git Exists &amp; What GitHub Is</h3>
+<p>Imagine writing a 100-page research paper. Every time you make an edit, you save a new file:</p>
+<ul>
+<li><code>paper_v1.docx</code></li>
+<li><code>paper_final.docx</code></li>
+<li><code>paper_final_REALLY_FINAL.docx</code></li>
+<li><code>paper_final_REALLY_FINAL_FIXED_EDIT.docx</code></li>
+</ul>
+<p>This is chaos. You lose track of what changed, when it changed, and why it changed.</p>
+<p><strong>Git</strong> is a distributed version control system created by Linus Torvalds (the creator of Linux). Git tracks every line change across every file in your project codebase over time, taking snapshot checkpoints called <strong>commits</strong>.</p>
+<p><strong>GitHub</strong> is a cloud platform that hosts Git repositories online, acting as a central source of truth where developers collaborate, review code, and trigger automated deployment pipelines.</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        GIT VS GITHUB DISTINCTION                       │
+│                                                                        │
+│   Tool           What it is                   Where it runs            │
+│   ──────────────────────────────────────────────────────────────────   │
+│   Git            CLI Software / Engine        Locally on your laptop   │
+│   GitHub         Cloud Website / Storage      Remote AWS Datacenters   │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>6.2 Key Git Concepts Defined</h3>
+<ul>
+<li><strong>Repository (Repo)</strong>: The master folder containing all source code files, assets, and the hidden <code>.git/</code> database tracking history.</li>
+<li><strong>Clone</strong>: Downloading a full copy of a remote GitHub repository to your local laptop or EC2 server.</li>
+<li><strong>Commit</strong>: A permanent, cryptographic snapshot of file changes at a specific point in time identified by a unique SHA hash (e.g., <code>abc1234</code>).</li>
+<li><strong>Branch</strong>: An isolated parallel timeline of development (e.g., <code>main</code> for production code, <code>feature/dark-mode</code> for experimental code).</li>
+<li><strong>Origin / Remote</strong>: The nickname pointing to the central remote server repository hosted on GitHub.</li>
+<li><strong>Pull</strong>: Downloading and merging the newest commits from GitHub into your local directory.</li>
+</ul>
+<hr>
+<h3>6.3 Why We Cloned Excalidraw to <code>/opt/excalidraw/repo</code></h3>
+<p>During server deployment, we ran:</p>
+<pre><code class="language-bash">sudo git clone https://github.com/YOUR_ORG/excalidraw.git /opt/excalidraw/repo
+</code></pre>
+<p>By cloning the codebase directly onto our EC2 instance, we placed all production configuration files (<code>docker-compose.ec2.yml</code>, <code>nginx-proxy.conf</code>, <code>setup.sh</code>, <code>deploy.sh</code>) right where the Linux operating system and Docker Engine can execute them locally.</p>
+<hr>
+<h2>PART 7: Docker &amp; Containerization Deep Dive</h2>
+<h3>7.1 The &quot;It Works on My Machine&quot; Nightmare</h3>
+<p>Before Docker, software deployment was infamous for the <strong>&quot;It Works on My Machine&quot;</strong> syndrome:</p>
+<ol>
+<li>A developer writes a Node.js web app on macOS using Node v20.4 and installs specific graphics libraries.</li>
+<li>The developer sends the code to the Ops team to deploy on an Ubuntu Linux server.</li>
+<li>The Ubuntu server has Node v16.1 installed, missing shared C++ libraries, and an older Nginx version.</li>
+<li><strong>The application crashes instantly on the server.</strong> The developer responds: <em>&quot;Well, it worked fine on my laptop!&quot;</em></li>
+</ol>
+<pre><code>DEVELOPER&#39;S MACBOOK                              PRODUCTION UBUNTU SERVER
+┌─────────────────────────┐                      ┌─────────────────────────┐
+│ Excalidraw Codebase     │                      │ Excalidraw Codebase     │
+│ Node.js v20.4 (macOS)   │ ────── DEPLOY ────►  │ Node.js v16.1 (Linux)   │ ──► CRASH!
+│ C++ Graphics Libs       │   (Different OS)     │ Missing C++ Libraries   │
+└─────────────────────────┘                      └─────────────────────────┘
+</code></pre>
+<hr>
+<h3>7.2 What is Docker &amp; How Does it Solve This?</h3>
+<p><strong>Docker</strong> solves this problem by packaging your code <strong>together with its exact operating system runtime, environment variables, dependencies, and configuration files</strong> into a standardized, self-contained unit called a <strong>container</strong>.</p>
+<p>Whether a Docker container runs on macOS, Windows 11, Ubuntu 24.04, or an AWS server, it behaves <strong>100% identically</strong> because it carries its entire operating environment inside itself!</p>
+<hr>
+<h3>7.3 Virtual Machines vs Docker Containers</h3>
+<p>Beginners often confuse Docker containers with Virtual Machines (like AWS EC2 or VirtualBox).</p>
+<pre><code>   VIRTUAL MACHINES (VMs)                       DOCKER CONTAINERS
+┌───────────────────────────┐                ┌───────────────────────────┐
+│ App 1   │ App 2   │ App 3 │                │ App 1   │ App 2   │ App 3 │
+├─────────┼─────────┼───────┤                ├─────────┼─────────┼───────┤
+│ Guest OS│ Guest OS│GuestOS│                │ Bins/Libs│Bins/Libs│Bins/Libs│
+├─────────┴─────────┴───────┤                ├─────────┴─────────┴───────┤
+│    HYPERVISOR (Hardware)  │                │     DOCKER ENGINE         │
+├───────────────────────────┤                ├───────────────────────────┤
+│     HOST OS (Hardware)    │                │  HOST OS KERNEL (Shared)  │
+└───────────────────────────┘                └───────────────────────────┘
+</code></pre>
+<ul>
+<li><strong>Virtual Machines</strong>: Every VM boots a full, heavy guest operating system (requiring 2+ GB RAM and gigabytes of disk space per VM). VMs take minutes to boot.</li>
+<li><strong>Docker Containers</strong>: Containers share the underlying host Linux kernel. They only isolate user space processes, libraries, and binaries. They start in <strong>seconds</strong> and use as little as <strong>15 MB of RAM</strong>!</li>
+</ul>
+<hr>
+<h3>7.4 Core Docker Concepts</h3>
+<h4>1. Dockerfile — The Recipe</h4>
+<p>A text file containing step-by-step instructions on how to build a container image:</p>
+<pre><code class="language-dockerfile">FROM nginx:stable-alpine-slim
+COPY build/ /usr/share/nginx/html
+EXPOSE 80
+CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
+</code></pre>
+<h4>2. Docker Image — The Static Blueprint</h4>
+<p>An immutable, read-only template built from a Dockerfile containing layered file systems (e.g., base Alpine Linux + Nginx + compiled Excalidraw static JS files). Images are stored in registries like <strong>AWS ECR</strong>.</p>
+<h4>3. Docker Container — The Living Process</h4>
+<p>A runnable instance of an image. If a Docker Image is a class definition in Java, a Docker Container is an instantiated Object living in RAM.</p>
+<h4>4. Docker Engine — The Host Controller</h4>
+<p>The background service daemon (<code>dockerd</code>) running on Ubuntu that manages container lifecycles, creates virtual networks, and mounts volume storage.</p>
+<hr>
+<h3>7.5 Docker Compose Architecture (<code>docker-compose.ec2.yml</code>)</h3>
+<p>When running a real application, you rarely run just one container. Excalidraw requires four distinct services working together!</p>
+<p>Instead of running long, complex <code>docker run</code> commands manually, we use <strong>Docker Compose</strong>: a tool that defines and runs multi-container Docker applications using a declarative YAML file (<code>docker-compose.ec2.yml</code>).</p>
+<p>Let&#39;s examine our four containers defined in <code>docker-compose.ec2.yml</code>:</p>
+<pre><code>                             DOCKER ENGINE
+┌────────────────────────────────────────────────────────────────────────┐
+│  VIRTUAL BRIDGE NETWORK (excalidraw-net)                               │
+│                                                                        │
+│  ┌──────────────────────┐  (Ports 80/443)  ┌──────────────────────┐  │
+│  │ nginx-proxy          │ ───────────────► │ Public Internet      │  │
+│  │ (Reverse Proxy)      │                  └──────────────────────┘  │
+│  └──────────┬───────────┘                                              │
+│             │ HTTP (/ )                                                │
+│             ▼                                                          │
+│  ┌──────────────────────┐  WebSocket (/socket.io/)                       │
+│  │ excalidraw-app       │ ──────────────────┐                          │
+│  │ (SPA Static Server)  │                   │                          │
+│  └──────────────────────┘                   ▼                          │
+│                                ┌──────────────────────┐                │
+│                                │ excalidraw-room      │                │
+│                                │ (Socket.IO Relay)    │                │
+│                                └──────────────────────┘                │
+│  ┌──────────────────────┐                                              │
+│  │ certbot              │ (Renews SSL certs into shared volumes)       │
+│  └──────────────────────┘                                              │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h4>Detailed Breakdown of the 4 Services:</h4>
+<ol>
+<li><p><strong><code>nginx-proxy</code></strong>:</p>
+<ul>
+<li><strong>Role</strong>: The front door facing the public internet. Binds host ports <code>80</code> and <code>443</code>.</li>
+<li><strong>Resource Limit</strong>: Memory capped at <code>64M</code> RAM (critical for <code>t2.micro</code>).</li>
+<li><strong>Healthcheck</strong>: Periodically runs <code>wget -q -O /dev/null http://localhost/health</code> to verify proxy health.</li>
+</ul>
+</li>
+<li><p><strong><code>excalidraw</code> (excalidraw-app)</strong>:</p>
+<ul>
+<li><strong>Role</strong>: Serves the single-page React frontend application assets. Pulled from <strong>AWS ECR</strong>.</li>
+<li><strong>Isolation</strong>: Has <strong>no host ports exposed</strong>! Only accessible by <code>nginx-proxy</code> via the internal container network.</li>
+</ul>
+</li>
+<li><p><strong><code>excalidraw-room</code></strong>:</p>
+<ul>
+<li><strong>Role</strong>: Node.js Socket.IO server enabling multi-user real-time whiteboard collaboration.</li>
+<li><strong>Heap Limit</strong>: <code>NODE_OPTIONS=--max-old-space-size=100</code> caps Node.js memory heap to 100 MB to prevent <code>t2.micro</code> memory crashes.</li>
+</ul>
+</li>
+<li><p><strong><code>certbot</code></strong>:</p>
+<ul>
+<li><strong>Role</strong>: Let&#39;s Encrypt renewal agent. Wakes up every 12 hours, checks if TLS certs expire within 30 days, renews them via webroot, and sends <code>SIGHUP</code> signal to <code>nginx-proxy</code> to reload certs zero-downtime.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3>7.6 Docker Volumes &amp; Networks Explained</h3>
+<h4>Docker Volumes (Persistent Storage)</h4>
+<p>Containers are ephemeral: when a container is destroyed, any file created inside it vanishes forever!</p>
+<p>To persist Let&#39;s Encrypt certificates across container restarts, we created <strong>Docker Volumes</strong>:</p>
+<ul>
+<li><code>certbot-conf</code>: Stores <code>/etc/letsencrypt</code> keys and certificates on the host hard drive. Shared read-only with <code>nginx-proxy</code>.</li>
+<li><code>certbot-www</code>: Stores ACME HTTP-01 challenge verification files.</li>
+</ul>
+<h4>Docker Networks (Internal Service Discovery)</h4>
+<p>We defined an internal driver network: <code>excalidraw-net</code>.</p>
+<p>Docker automatically creates an internal DNS server for containers on this network. <code>nginx-proxy</code> can route traffic to <code>http://excalidraw:80</code> or <code>http://excalidraw-room:3002</code> using container names as domain names!</p>
+<hr>
+<h3>7.7 The Master Mental Model: The Apartment Building Analogy</h3>
+<p>To lock this in forever, use this mental model:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Physical Real Estate Analogy</th>
+<th align="left">Cloud / Docker Tech Equivalent</th>
+<th align="left">Technical Function</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>The Apartment Building</strong></td>
+<td align="left"><strong>AWS EC2 Instance</strong></td>
+<td align="left">The overall physical box providing power, roof, and utility connections.</td>
+</tr>
+<tr>
+<td align="left"><strong>Building Manager / Landlord</strong></td>
+<td align="left"><strong>Docker Engine</strong></td>
+<td align="left">Manages room allocation, enforces noise/resource limits, handles security.</td>
+</tr>
+<tr>
+<td align="left"><strong>Architectural Floor Plan Blueprint</strong></td>
+<td align="left"><strong>Docker Image (ECR)</strong></td>
+<td align="left">Immutable paper drawing showing exact room layout; cannot be lived in directly.</td>
+</tr>
+<tr>
+<td align="left"><strong>Constructed Furnished Unit</strong></td>
+<td align="left"><strong>Docker Container</strong></td>
+<td align="left">A physical living space created from the blueprint where actual work happens.</td>
+</tr>
+<tr>
+<td align="left"><strong>Building Reception Desk</strong></td>
+<td align="left"><strong>Nginx Proxy Container</strong></td>
+<td align="left">Sits at front door, checks IDs, routes visitors to Unit 1 or Unit 2.</td>
+</tr>
+<tr>
+<td align="left"><strong>Secure Intercom System</strong></td>
+<td align="left"><strong>Docker Network (<code>excalidraw-net</code>)</strong></td>
+<td align="left">Allows internal rooms to call each other without opening doors to the street.</td>
+</tr>
+<tr>
+<td align="left"><strong>Off-Site Storage Locker</strong></td>
+<td align="left"><strong>Docker Volume (<code>certbot-conf</code>)</strong></td>
+<td align="left">Safe storage area outside the unit; contents remain intact even if unit is renovated.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🔒 Chapter 3 Mini-Quiz</h2>
+<ol>
+<li><p><strong>Why does the <code>excalidraw-app</code> container have no <code>ports:</code> section mapped to the host in <code>docker-compose.ec2.yml</code>?</strong></p>
+<ul>
+<li>A) Because static websites do not use ports</li>
+<li>B) For security isolation: only <code>nginx-proxy</code> should receive internet traffic, routing requests internally over <code>excalidraw-net</code></li>
+<li>C) Because host ports were disabled by AWS</li>
+<li>D) To save money on network data transfer</li>
+</ul>
+</li>
+<li><p><strong>What is the key difference between a Docker Image and a Docker Container?</strong></p>
+<ul>
+<li>A) Images run on Windows; Containers run on Linux</li>
+<li>B) Images are immutable read-only blueprints; Containers are running execution instances stored in RAM</li>
+<li>C) Images require AWS ECR; Containers do not</li>
+<li>D) Images consume RAM; Containers consume CPU</li>
+</ul>
+</li>
+<li><p><strong>What problem does <code>NODE_OPTIONS=--max-old-space-size=100</code> solve in the <code>excalidraw-room</code> container service definition?</strong></p>
+<ul>
+<li>A) It speeds up WebSocket internet transfer rates</li>
+<li>B) It restricts Node.js V8 garbage collection heap allocation to 100 MB, preventing Out-Of-Memory crashes on our 1 GB <code>t2.micro</code> EC2 instance</li>
+<li>C) It allows 100 simultaneous room connections</li>
+<li>D) It encrypts socket data with 100-bit keys</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>learn Nginx reverse proxying, DNS resolution, and SSL/TLS encryption!</p>
+<hr>
+<h1>Module 4: Nginx, DNS &amp; SSL/TLS Encryption</h1>
+<hr>
+<h2>PART 8: Nginx &amp; Reverse Proxy Architecture</h2>
+<h3>8.1 What is Nginx &amp; Why Does it Exist?</h3>
+<p>In the early days of the web, web servers used a process-per-request model (like Apache HTTP Server). If 1,000 users connected simultaneously, the server spawned 1,000 separate heavy operating system processes. This caused the famous <strong>C10K problem</strong> (inability to handle 10,000 concurrent connections due to memory exhaustion).</p>
+<p><strong>Nginx</strong> (pronounced &quot;Engine-X&quot;) was created in 2004 using an <strong>asynchronous, event-driven, non-blocking architecture</strong>. A single Nginx worker process can handle tens of thousands of concurrent connections using a tiny sliver of CPU and RAM (~30 MB).</p>
+<hr>
+<h3>8.2 What is a Reverse Proxy?</h3>
+<p>To understand a <strong>Reverse Proxy</strong>, let&#39;s contrast it with a <strong>Forward Proxy</strong>:</p>
+<ul>
+<li><strong>Forward Proxy (Protects Clients)</strong>: Sits in front of client laptops (e.g., a corporate VPN proxy). The server outside only sees the proxy&#39;s IP address, hiding the client&#39;s identity.</li>
+<li><strong>Reverse Proxy (Protects Servers)</strong>: Sits in front of backend servers. Clients on the internet only talk to Nginx (<code>nginx-proxy</code>). Nginx inspects incoming requests and routes them to internal containers (<code>excalidraw-app</code>, <code>excalidraw-room</code>).</li>
+</ul>
+<pre><code>FORWARD PROXY:
+[Client Laptops] ──► [FORWARD PROXY] ──► [Public Internet / Web Servers]
+ (Hides Client IPs)
+
+REVERSE PROXY (OUR EXCALIDRAW SETUP):
+[Public Internet] ──► [Nginx Reverse Proxy] ──┬──► [excalidraw-app container]
+ (Hides Server IPs &amp; Topology)               └──► [excalidraw-room container]
+</code></pre>
+<hr>
+<h3>8.3 Deconstructing Our <code>deploy/nginx-proxy.conf</code></h3>
+<p>Let&#39;s dissect the exact Nginx configuration running on our EC2 instance:</p>
+<h4>1. HTTP Server Block (Port 80): ACME Challenge &amp; Redirect</h4>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name _;
+
+    # Allow Let&#39;s Encrypt ACME HTTP-01 challenge verification
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        try_files $uri =404;
+    }
+
+    # Redirect all other plain HTTP traffic to secure HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+</code></pre>
+<ul>
+<li><strong>What it does</strong>: Port 80 handles ACME certificate validation requests from Let&#39;s Encrypt. Any user typing <code>http://draw.yourdomain.com</code> is automatically issued an <code>HTTP 301 Moved Permanently</code> redirect to <code>https://draw.yourdomain.com</code>.</li>
+</ul>
+<h4>2. HTTPS Server Block (Port 443): SSL Termination &amp; Upstream Routing</h4>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name draw.yourdomain.com;
+
+    # SSL Certificate Keys mounted from volume
+    ssl_certificate     /etc/letsencrypt/live/draw.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/draw.yourdomain.com/privkey.pem;
+
+    # 1. Main Excalidraw SPA Frontend Proxy
+    location / {
+        proxy_pass http://excalidraw_app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    # 2. Socket.IO Real-Time Collaboration WebSocket Proxy
+    location /socket.io/ {
+        proxy_pass http://excalidraw_room;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+        proxy_read_timeout 86400s;
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>Why WebSocket Upgrade Headers Are Mandatory</strong>:<br>Standard HTTP connections are short-lived request-response cycles. WebSockets require a persistent, two-way full-duplex TCP pipe.<br>The headers <code>Upgrade: $http_upgrade</code> and <code>Connection: &quot;upgrade&quot;</code> tell Nginx to switch the HTTP connection protocol to WebSocket format. Setting <code>proxy_read_timeout 86400s</code> prevents Nginx from severing idle whiteboard collaboration sessions for 24 hours.</p>
+</blockquote>
+<hr>
+<h2>PART 9: The Domain Name System (DNS)</h2>
+<h3>9.1 How Browsers Locate Servers</h3>
+<p>Computers communicate using numerical IP addresses (e.g., <code>54.210.45.12</code>). Humans remember text names (e.g., <code>draw.yourdomain.com</code>).</p>
+<p><strong>DNS (Domain Name System)</strong> is the decentralized global directory service that translates human-readable domain names into machine-routable IP addresses.</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        DNS RESOLUTION SEQUENCE                         │
+│                                                                        │
+│ User types: &quot;draw.yourdomain.com&quot;                                      │
+│                                                                        │
+│ [Browser] ──1. Query DNS?──► [Recursive Resolver (1.1.1.1)]             │
+│                                       │                                │
+│                                       ├─2. Ask Root (.)                │
+│                                       ├─3. Ask TLD (.com)              │
+│                                       └─4. Ask Route 53 (draw=54.210...)│
+│ [Browser] ◄──5. IP: 54.210.45.12──────┘                                │
+│                                                                        │
+│ [Browser] ──6. HTTP GET https://54.210.45.12:443 ──► [AWS EC2 Server]   │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>9.2 Key DNS Record Types</h3>
+<p>When configuring AWS Route 53, Cloudflare, or GoDaddy, you create DNS records:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Record Type</th>
+<th align="left">Full Name</th>
+<th align="left">Purpose</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>A Record</strong></td>
+<td align="left">Address Record</td>
+<td align="left">Maps a domain/subdomain directly to an <strong>IPv4 Address</strong>.</td>
+<td align="left"><code>draw.yourdomain.com → 54.210.45.12</code></td>
+</tr>
+<tr>
+<td align="left"><strong>AAAA Record</strong></td>
+<td align="left">IPv6 Address Record</td>
+<td align="left">Maps a domain directly to an <strong>IPv6 Address</strong>.</td>
+<td align="left"><code>draw.yourdomain.com → 2600:1f18::1</code></td>
+</tr>
+<tr>
+<td align="left"><strong>CNAME</strong></td>
+<td align="left">Canonical Name</td>
+<td align="left">Aliases one domain name to another domain name.</td>
+<td align="left"><code>www.yourdomain.com → yourdomain.com</code></td>
+</tr>
+<tr>
+<td align="left"><strong>TXT Record</strong></td>
+<td align="left">Text Record</td>
+<td align="left">Holds arbitrary plain text (used for verification &amp; Let&#39;s Encrypt).</td>
+<td align="left"><code>v=spf1 include:_spf.google.com ~all</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>9.3 What is <code>nip.io</code> Wildcard DNS?</h3>
+<p>During testing, you might not own a custom domain yet. We use <strong><code>nip.io</code></strong>: a free wildcard DNS service.</p>
+<p>When you query <code>54-210-45-12.nip.io</code>, the <code>nip.io</code> nameservers dynamically extract the IP address embedded in the hostname and instantly return <code>54.210.45.12</code>. This allows developers to test SSL certificates and domain setups on raw IP addresses instantly!</p>
+<hr>
+<h2>PART 10: SSL/TLS Encryption &amp; Let&#39;s Encrypt Certbot</h2>
+<h3>10.1 HTTP vs HTTPS: Why Plain HTTP is Dangerous</h3>
+<ul>
+<li><strong>HTTP (Port 80)</strong>: Unencrypted cleartext transmission. Anyone sitting on your public Wi-Fi network (at Starbucks or a dorm) can use packet-sniffing software (like Wireshark) to view your passwords, drawn shapes, and personal data flowing through the air.</li>
+<li><strong>HTTPS (Port 443)</strong>: HTTP over <strong>TLS (Transport Layer Security)</strong>. All payload data is cryptographically encrypted before leaving your browser. Interceptors see only unreadable garbled mathematical noise.</li>
+</ul>
+<hr>
+<h3>10.2 Asymmetric vs Symmetric Encryption</h3>
+<p>HTTPS uses a clever combination of two cryptographic techniques:</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        TLS HANDSHAKE ENCRYPTION                        │
+│                                                                        │
+│ 1. Asymmetric (Handshake Phase):                                       │
+│    Server sends Public Key ──► Client encrypts random secret.          │
+│    Server decrypts with Private Key. Both share secret key.            │
+│                                                                        │
+│ 2. Symmetric (Data Transfer Phase):                                    │
+│    Both sides use shared secret key for ultra-fast AES encryption.     │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<ol>
+<li><strong>Asymmetric Encryption (Public/Private Keys)</strong>:<ul>
+<li><strong>Public Key</strong> (<code>fullchain.pem</code>): Shared openly with the world. Anyone can use it to <em>encrypt</em> a message.</li>
+<li><strong>Private Key</strong> (<code>privkey.pem</code>): Secret key kept locked inside the <code>/opt/excalidraw/certbot/conf/</code> server folder. Only this key can <em>decrypt</em> messages encrypted by the public key.</li>
+</ul>
+</li>
+<li><strong>Symmetric Encryption (Session Key)</strong>:<ul>
+<li>Asymmetric math is slow. During the TLS handshake, the browser and server use asymmetric keys to negotiate a shared temporary <strong>Symmetric Session Key</strong> (AES-GCM), which encrypts subsequent web traffic at lightning speed.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3>10.3 How Let&#39;s Encrypt ACME HTTP-01 Validation Works</h3>
+<p>Historically, SSL certificates cost $200/year and took days of manual paperwork. <strong>Let&#39;s Encrypt</strong> is a free, automated Certificate Authority (CA).</p>
+<p>Our script <code>deploy/certbot-init.sh</code> automates the <strong>ACME HTTP-01 Challenge</strong>:</p>
+<pre><code>[Certbot Client] ──1. Request Cert for draw.yourdomain.com ──► [Let&#39;s Encrypt CA]
+                                                                      │
+[Certbot Client] ◄──2. Here is Token &#39;XYZ123&#39; ────────────────────────┘
+       │
+       ▼
+ 3. Writes Token to: /var/www/certbot/.well-known/acme-challenge/XYZ123
+       │
+       ▼
+[Let&#39;s Encrypt CA] ──4. HTTP GET http://draw.yourdomain.com/.well-known/.../XYZ123
+       │
+       ▼  5. Validates token matches! Proves you control the server at that IP.
+[Let&#39;s Encrypt CA] ──6. Issues Signed TLS Certificate (fullchain.pem + privkey.pem)
+</code></pre>
+<hr>
+<h2>🔒 Chapter 4 Mini-Quiz</h2>
+<ol>
+<li><p><strong>What happens when Nginx receives an incoming request at path <code>/socket.io/</code>?</strong></p>
+<ul>
+<li>A) It serves static HTML from disk</li>
+<li>B) It evaluates ACME challenge tokens</li>
+<li>C) It upgrades the HTTP connection to a full-duplex WebSocket pipe and proxies traffic to <code>http://excalidraw-room:3002</code></li>
+<li>D) It redirects the browser to Port 80</li>
+</ul>
+</li>
+<li><p><strong>Why MUST the SSL Private Key (<code>privkey.pem</code>) be kept strictly secret on the EC2 server?</strong></p>
+<ul>
+<li>A) Because anyone with the private key can decrypt all captured HTTPS traffic and impersonate your domain server</li>
+<li>B) Because AWS charges $100 if the key is leaked</li>
+<li>C) Because Certbot deletes itself if the key is read</li>
+<li>D) Because private keys expire after 5 minutes</li>
+</ul>
+</li>
+<li><p><strong>In the Let&#39;s Encrypt ACME HTTP-01 challenge, how does the Certificate Authority verify domain ownership?</strong></p>
+<ul>
+<li>A) By calling the domain owner on the phone</li>
+<li>B) By sending an HTTP GET request to <code>http://&lt;domain&gt;/.well-known/acme-challenge/&lt;token&gt;</code> and checking if the server returns the expected token</li>
+<li>C) By logging into your AWS EC2 console</li>
+<li>D) By checking your credit card details</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-C, 2-A, 3-B)</em></p>
+<hr>
+<p>Next Step: Proceed to <strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/05-deployment-and-mistakes.md">05-deployment-and-mistakes.md</a></strong> for the complete deployment walkthrough and troubleshooting guide!</p>
+<hr>
+<h1>Module 5: Chronological Deployment Journey &amp; Troubleshooting Guide</h1>
+<hr>
+<h2>PART 11: The Chronological Deployment Walkthrough</h2>
+<p>Here is the exact step-by-step transcript of how we built, configured, and deployed Excalidraw onto AWS EC2.</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                     DEPLOYMENT TIMELINE STAGES                         │
+│                                                                        │
+│ Phase 1: AWS Setup ──► Phase 2: OS Bootstrap ──► Phase 3: TLS Init ──► Phase 4: Production │
+│ (ECR / EC2 / EIP)      (setup.sh / Swap)        (certbot-init.sh)       (deploy.sh Stack) │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>Phase 1: Local Environment &amp; AWS Infrastructure Setup</h3>
+<h4>Step 1.1 — Create AWS ECR Repository (Local Machine)</h4>
+<pre><code class="language-bash">aws ecr create-repository \
+    --repository-name excalidraw \
+    --region us-east-1 \
+    --image-scanning-configuration scanOnPush=true
+</code></pre>
+<ul>
+<li><strong>What happened</strong>: AWS allocated a private container registry URI: <code>123456789012.dkr.ecr.us-east-1.amazonaws.com/excalidraw</code>.</li>
+<li><strong>Internal State</strong>: AWS IAM validated our credentials; ECR initialized storage for image manifests.</li>
+</ul>
+<h4>Step 1.2 — Build &amp; Push Docker Image (Local Machine)</h4>
+<pre><code class="language-bash"># Log in to ECR registry
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
+
+# Build production container image
+docker build -t 123456789012.dkr.ecr.us-east-1.amazonaws.com/excalidraw:latest .
+
+# Push image layers to ECR
+docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/excalidraw:latest
+</code></pre>
+<ul>
+<li><strong>What happened</strong>: Docker compiled static frontend assets into Nginx Alpine image layers (~35 MB total) and pushed them over encrypted HTTPS to AWS ECR storage.</li>
+</ul>
+<h4>Step 1.3 — Launch EC2 Instance &amp; Attach Elastic IP</h4>
+<ul>
+<li>Console choices: <code>Ubuntu 24.04 LTS</code>, <code>t2.micro</code>, 30 GB <code>gp3</code> storage, Security Group <code>excalidraw-sg</code> (Ports 22, 80, 443 open).</li>
+<li>Elastic IP allocated and associated with instance.</li>
+<li>DNS A-record pointed: <code>draw.yourdomain.com → 54.210.45.12</code>.</li>
+</ul>
+<hr>
+<h3>Phase 2: Server Initialization &amp; Bootstrapping</h3>
+<h4>Step 2.1 — SSH into EC2 Server</h4>
+<pre><code class="language-bash">chmod 400 ~/Downloads/excalidraw-key.pem
+ssh -i ~/Downloads/excalidraw-key.pem ubuntu@54.210.45.12
+</code></pre>
+<h4>Step 2.2 — Clone Codebase to <code>/opt/excalidraw/repo</code></h4>
+<pre><code class="language-bash">sudo git clone https://github.com/YOUR_ORG/excalidraw.git /opt/excalidraw/repo
+sudo chown -R ubuntu:ubuntu /opt/excalidraw/repo
+</code></pre>
+<h4>Step 2.3 — Run Environment Setup Script</h4>
+<pre><code class="language-bash">cd /opt/excalidraw/repo
+sudo bash deploy/setup.sh
+</code></pre>
+<ul>
+<li><strong>Server Internal Actions</strong>:<ol>
+<li>Updated APT repositories. Installed <code>docker-ce</code>, <code>awscli</code>, <code>ufw</code>, <code>fail2ban</code>, <code>jq</code>.</li>
+<li>Provisioned <code>/swapfile</code> (2 GB) on disk, formatted as swap space, activated with <code>swapon</code>.</li>
+<li>Configured UFW firewall: default block, allow ports 22, 80, 443.</li>
+<li>Created system directory structure: <code>/opt/excalidraw/{logs,certbot/conf,certbot/www,backups}</code>.</li>
+<li>Added <code>ubuntu</code> user to the <code>docker</code> Linux group.</li>
+</ol>
+</li>
+</ul>
+<h4>Step 2.4 — Configure Production Environment Variables</h4>
+<pre><code class="language-bash">nano /opt/excalidraw/.env.production
+</code></pre>
+<p>Populated values: <code>DOMAIN=draw.yourdomain.com</code>, <code>CERTBOT_EMAIL=admin@yourdomain.com</code>, <code>ECR_REGISTRY=...</code>, <code>VITE_APP_WS_SERVER_URL=https://draw.yourdomain.com</code>.</p>
+<hr>
+<h3>Phase 3: Acquiring TLS Certificates (<code>certbot-init.sh</code>)</h3>
+<pre><code class="language-bash">bash deploy/certbot-init.sh
+</code></pre>
+<ul>
+<li><strong>Server Internal Actions</strong>:<ol>
+<li>Validated DNS resolution (<code>dig +short draw.yourdomain.com</code> matched <code>54.210.45.12</code>).</li>
+<li>Booted temporary lightweight HTTP Nginx container (<code>certbot-nginx-tmp</code>) on Port 80.</li>
+<li>Spawned ephemeral Certbot container; generated ACME HTTP-01 challenge token.</li>
+<li>Let&#39;s Encrypt servers fetched <code>http://draw.yourdomain.com/.well-known/acme-challenge/token</code>.</li>
+<li>Challenge verified! Certbot saved <code>fullchain.pem</code> and <code>privkey.pem</code> into <code>/opt/excalidraw/certbot/conf/live/draw.yourdomain.com/</code>.</li>
+<li>Generated Diffie-Hellman parameters (<code>ssl-dhparams.pem</code>) for PFS cipher security.</li>
+<li>Stopped and removed temporary container.</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3>Phase 4: Production Deployment (<code>deploy.sh</code>)</h3>
+<pre><code class="language-bash">bash deploy/deploy.sh
+</code></pre>
+<ul>
+<li><strong>Server Internal Actions</strong>:<ol>
+<li>Authenticated Docker to AWS ECR using EC2 instance profile IAM role.</li>
+<li>Substituted <code>EXCALIDRAW_DOMAIN</code> placeholder inside <code>deploy/nginx-proxy.conf</code>.</li>
+<li>Executed <code>docker compose -f deploy/docker-compose.ec2.yml up -d</code>.</li>
+<li>Docker Engine pulled Excalidraw image from ECR and <code>excalidraw-room</code> from Docker Hub.</li>
+<li>Started containers: <code>excalidraw-app</code>, <code>excalidraw-room</code>, <code>excalidraw-proxy</code>, <code>excalidraw-certbot</code>.</li>
+<li>Executed healthcheck polling for 60s until <code>curl https://draw.yourdomain.com/health</code> returned <code>200 OK</code>.</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2>PART 12: Real-World Mistakes &amp; Root-Cause Troubleshooting</h2>
+<p>Below is every actual error hit during deployment, structured as: <strong>Problem → Cause → Diagnosis → Fix → Prevention</strong>.</p>
+<hr>
+<h3>Mistake 1: SSH Connection Refused (<code>UNPROTECTED PRIVATE KEY FILE!</code>)</h3>
+<h4>Problem</h4>
+<p>SSH failed with error:</p>
+<pre><code>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ WARNING: UNPROTECTED PRIVATE KEY FILE! @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0777 for &#39;excalidraw-key.pem&#39; are too open.
+It is required that your private key files are NOT accessible by others.
+Bad permissions: ignore key: excalidraw-key.pem
+Permission denied (publickey).
+</code></pre>
+<h4>Why It Happened</h4>
+<p>When downloaded on Windows/macOS, the key file had default permissions <code>777</code> (readable/writable by all users). OpenSSH client security rules mandate that private keys MUST be readable ONLY by the owner (<code>400</code>).</p>
+<h4>Diagnosis</h4>
+<p>Running <code>ls -l excalidraw-key.pem</code> showed <code>-rwxrwxrwx</code>.</p>
+<h4>Fix</h4>
+<pre><code class="language-bash">chmod 400 ~/Downloads/excalidraw-key.pem
+</code></pre>
+<h4>How Professionals Avoid It</h4>
+<p>Store SSH keys in <code>~/.ssh/</code> with strict <code>chmod 600</code> settings, or use AWS Systems Manager (SSM) Session Manager to log into EC2 instances without SSH keys entirely!</p>
+<hr>
+<h3>Mistake 2: Bash Script Crash (<code>\r</code>: command not found)</h3>
+<h4>Problem</h4>
+<p>Executing <code>deploy/setup.sh</code> resulted in weird syntax errors:</p>
+<pre><code>deploy/setup.sh: line 2: $&#39;\r&#39;: command not found
+deploy/setup.sh: line 28: syntax error near unexpected token `$&#39;in\r&#39;&#39;
+</code></pre>
+<h4>Why It Happened</h4>
+<p>The file was edited or saved on Windows using Git without CRLF conversion disabled. Windows uses <code>\r\n</code> (Carriage Return + Line Feed) for newlines; Linux shells only understand <code>\n</code> (Line Feed). The hidden <code>\r</code> character broke script execution.</p>
+<h4>Diagnosis</h4>
+<p>Inspected line endings using <code>file deploy/setup.sh</code>:</p>
+<blockquote>
+<p><code>deploy/setup.sh: Bourne-Again shell script, ASCII text executable, with CRLF line terminators</code></p>
+</blockquote>
+<h4>Fix</h4>
+<p>Converted line endings to Unix format:</p>
+<pre><code class="language-bash">sudo apt-get install -y dos2unix
+dos2unix deploy/setup.sh deploy/certbot-init.sh deploy/deploy.sh
+</code></pre>
+<h4>How Professionals Avoid It</h4>
+<p>Add a <code>.gitattributes</code> file to the repository enforcing <code>* text eol=lf</code> across all shell scripts so Git automatically checks out Unix line endings on Windows.</p>
+<hr>
+<h3>Mistake 3: Docker Permission Denied (<code>got permission denied while trying to connect to Docker daemon</code>)</h3>
+<h4>Problem</h4>
+<p>Running <code>docker ps</code> as <code>ubuntu</code> user threw:</p>
+<pre><code>Permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
+</code></pre>
+<h4>Why It Happened</h4>
+<p>The Docker daemon Unix socket <code>/var/run/docker.sock</code> is owned by <code>root:docker</code>. The <code>ubuntu</code> user was not yet an active member of the <code>docker</code> Linux group.</p>
+<h4>Diagnosis</h4>
+<p>Checked user group membership using <code>groups</code>:</p>
+<blockquote>
+<p><code>ubuntu adm dialout cdrom sudo dip plugdev lxd</code> (missing <code>docker</code>!)</p>
+</blockquote>
+<h4>Fix</h4>
+<p>Added user to group and refreshed session group membership:</p>
+<pre><code class="language-bash">sudo usermod -aG docker ubuntu
+newgrp docker   # Or log out and log back into SSH
+</code></pre>
+<h4>How Professionals Avoid It</h4>
+<p>Automate group creation in Cloud-Init configuration scripts on first server boot.</p>
+<hr>
+<h3>Mistake 4: Nginx Proxy Container Crashes (<code>ssl_certificate: open failed</code>)</h3>
+<h4>Problem</h4>
+<p>Running <code>docker compose up -d</code> before running <code>certbot-init.sh</code> caused <code>excalidraw-proxy</code> to crash repeatedly (<code>CrashLoopBackOff</code>).</p>
+<h4>Why It Happened</h4>
+<p><code>nginx-proxy.conf</code> requires <code>/etc/letsencrypt/live/draw.yourdomain.com/fullchain.pem</code> to start HTTPS on Port 443. Because Certbot hadn&#39;t been run yet, the certificate files did not exist inside the mounted volume.</p>
+<h4>Diagnosis</h4>
+<p>Checked container failure logs:</p>
+<pre><code class="language-bash">docker logs excalidraw-proxy
+</code></pre>
+<blockquote>
+<p><code>nginx: [emerg] cannot load certificate &quot;/etc/letsencrypt/live/.../fullchain.pem&quot;: No such file or directory</code></p>
+</blockquote>
+<h4>Fix</h4>
+<p>Run <code>bash deploy/certbot-init.sh</code> <em>before</em> starting the main compose stack.</p>
+<h4>How Professionals Avoid It</h4>
+<p>Use initialization bootstrap scripts or entrypoint fallback logic that generates self-signed dummy certificates if production certificates are missing.</p>
+<hr>
+<h3>Mistake 5: Certbot ACME Challenge Failed (<code>Connection Refused / Timeout</code>)</h3>
+<h4>Problem</h4>
+<p>Running <code>certbot-init.sh</code> resulted in:</p>
+<pre><code>Certbot failed to authenticate domain draw.yourdomain.com
+Detail: Fetching http://draw.yourdomain.com/.well-known/acme-challenge/XYZ: Timeout during connect (likely firewall problem)
+</code></pre>
+<h4>Why It Happened</h4>
+<p>Either Port 80 was blocked in the AWS Security Group, or the DNS A-record had not finished propagating to global nameservers.</p>
+<h4>Diagnosis</h4>
+<p>Tested Port 80 connectivity externally using <code>curl</code>:</p>
+<pre><code class="language-bash">curl -I http://draw.yourdomain.com
+# Hangs indefinitely...
+</code></pre>
+<h4>Fix</h4>
+<ol>
+<li>Checked AWS Console → Security Groups → Added Inbound Rule: <code>HTTP (80)</code> from <code>0.0.0.0/0</code>.</li>
+<li>Verified DNS resolution with <code>dig +short draw.yourdomain.com</code>.</li>
+</ol>
+<h4>How Professionals Avoid It</h4>
+<p>Automate infrastructure using Terraform to guarantee Security Group rules are opened declaratively before running deployment scripts.</p>
+<hr>
+<h3>Mistake 6: Shareable Link Generation Fails / CORS and Mount Errors</h3>
+<h4>Problem</h4>
+<p>Clicking the &quot;Export to Link&quot; button inside the Excalidraw UI resulted in an indefinite loading spinner or an error alert: <em>&quot;Error. Couldn&#39;t create shareable link.&quot;</em> Check of developer tools console showed a <code>TypeError: Failed to fetch</code> or CORS violations when hitting the <code>/api/v2/post/</code> endpoint.</p>
+<h4>Why It Happened</h4>
+<p>Two separate integration bugs were present:</p>
+<ol>
+<li><strong>Wrong Docker Volume Mount</strong>: In <code>docker-compose.ec2.yml</code>, the <code>nginx-proxy</code> volume mount for the configuration file was hardcoded to <code>./deploy/nginx-proxy.conf</code>. This caused Nginx to load the original, un-substituted config with the <code>EXCALIDRAW_DOMAIN</code> placeholder rather than the live, domain-substituted <code>/opt/excalidraw/nginx-proxy.conf</code> generated by <code>deploy.sh</code>.</li>
+<li><strong>Hardcoded CORS Domain in Nginx</strong>: Inside <code>deploy/nginx-proxy.conf</code>, the <code>Access-Control-Allow-Origin</code> header for the <code>/api/v2/</code> location block was hardcoded to <code>https://draw.pixara.online</code> instead of using the domain placeholder, causing CORS blocks on different hostnames.</li>
+<li><strong>Vite Compile-Time Environments</strong>: Vite replaces <code>import.meta.env.*</code> expressions with static literals at build time, rendering the runtime environment variable substitution in <code>window.__env__</code> inside <code>index.html</code> completely inert for the compiled bundle.</li>
+</ol>
+<h4>Diagnosis</h4>
+<p>Accessing <code>https://draw.yourdomain.com/api/v2/post/</code> returned the main <code>index.html</code> SPA file (wildcard fallback) rather than Nginx proxying it upstream, showing that Nginx was not routing the <code>/api/v2/</code> path block.</p>
+<h4>Fix</h4>
+<ol>
+<li>Updated <code>docker-compose.ec2.yml</code> to mount the live substituted config <code>/opt/excalidraw/nginx-proxy.conf</code> instead of the static template folder copy.</li>
+<li>Updated <code>nginx-proxy.conf</code> to replace hardcoded CORS origins with <code>https://EXCALIDRAW_DOMAIN</code>.</li>
+<li>Created a wrapper utility <code>excalidraw-app/env.ts</code> resolving environment variables dynamically from <code>window.__env__</code> (with robust validation checks) before falling back to Vite build-time constants.</li>
+</ol>
+<h4>How Professionals Avoid It</h4>
+<p>Never rely on build-time environment constants for containerized deployments; always resolve configuration dynamically from global state objects like <code>window.__env__</code> at runtime, and ensure compose configurations mount the correct live-substituted path parameters.</p>
+<hr>
+<h2>🔒 Chapter 5 Mini-Quiz</h2>
+<ol>
+<li><p><strong>Why did line endings (<code>\r\n</code> vs <code>\n</code>) cause <code>setup.sh</code> to crash on Ubuntu Linux?</strong></p>
+<ul>
+<li>A) Linux requires scripts to be written in binary</li>
+<li>B) Windows CRLF line endings insert a hidden Carriage Return (<code>\r</code>) character that Linux Bash cannot parse</li>
+<li>C) Ubuntu 24.04 only runs Python scripts</li>
+<li>D) Git corrupts files saved on Windows</li>
+</ul>
+</li>
+<li><p><strong>How did we fix the <code>Permission denied while trying to connect to the Docker daemon socket</code> error?</strong></p>
+<ul>
+<li>A) By re-installing Ubuntu</li>
+<li>B) By adding the <code>ubuntu</code> user to the <code>docker</code> Linux group (<code>usermod -aG docker ubuntu</code>) and refreshing group session</li>
+<li>C) By opening Port 22 in AWS</li>
+<li>D) By disabling Docker security</li>
+</ul>
+</li>
+<li><p><strong>Why did <code>nginx-proxy</code> fail to start when launched before <code>certbot-init.sh</code>?</strong></p>
+<ul>
+<li>A) Because Nginx requires a paid license</li>
+<li>B) Nginx was configured to terminate HTTPS on Port 443, but the SSL certificate files did not yet exist on disk</li>
+<li>C) Docker Engine was offline</li>
+<li>D) Because AWS blocked Port 443</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>explore comprehensive visual diagrams and mental models!</p>
+<hr>
+<h1>Module 6: Intuitive Mental Models &amp; Architectural Diagrams</h1>
+<hr>
+<h2>PART 13: The Complete Real-World Mental Model Matrix</h2>
+<p>Cloud engineering can feel abstract because you cannot touch a virtual server or hold a network packet. To build an intuitive understanding, we map every component of our Excalidraw deployment to a consistent real-world analogy: <strong>The Apartment Complex</strong>.</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                    THE APARTMENT COMPLEX MENTAL MODEL                  │
+│                                                                        │
+│  AWS Cloud              ──►  The Gated City Neighborhood                │
+│  EC2 Instance           ──►  Rented Apartment Suite                    │
+│  Ubuntu OS              ──►  Interior Walls &amp; Utilities                │
+│  Docker Engine          ──►  Building Property Manager                 │
+│  Docker Image           ──►  Architectural Floor Plan Blueprint         │
+│  Docker Container       ──►  Furnished Living Room                     │
+│  Docker Volume          ──►  Locked Basement Storage Locker            │
+│  Docker Network         ──►  Building Intercom Wiring                  │
+│  Nginx Proxy            ──►  Front Desk Receptionist Concierge         │
+│  DNS (Route 53)         ──►  GPS Address Navigation System             │
+│  SSL Certificate (TLS)  ──►  Security Guard Armored Briefcase          │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>Deep Dive Analogy Mapping</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Component</th>
+<th align="left">Analogy Element</th>
+<th align="left">How It Explains The Technology</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>AWS Cloud</strong></td>
+<td align="left"><strong>The Gated City Neighborhood</strong></td>
+<td align="left">AWS owns land, electrical infrastructure, roads, and security. You rent space within their city.</td>
+</tr>
+<tr>
+<td align="left"><strong>EC2 Instance</strong></td>
+<td align="left"><strong>Rented Apartment Suite</strong></td>
+<td align="left">An empty space rented by the hour. You choose size (<code>t2.micro</code>), but hardware maintenance is handled by the landlord.</td>
+</tr>
+<tr>
+<td align="left"><strong>Ubuntu 24.04</strong></td>
+<td align="left"><strong>Interior Layout &amp; Utilities</strong></td>
+<td align="left">Provides basic plumbing, floors, and electrical sockets so tools can function inside the suite.</td>
+</tr>
+<tr>
+<td align="left"><strong>Docker Engine</strong></td>
+<td align="left"><strong>Property Manager</strong></td>
+<td align="left">Ensures rooms stay clean, enforces noise limits (RAM caps), and restarts rooms if something breaks.</td>
+</tr>
+<tr>
+<td align="left"><strong>Docker Image</strong></td>
+<td align="left"><strong>Architectural Blueprint</strong></td>
+<td align="left">Stored in a library (ECR). Shows where furniture goes, but you can&#39;t sleep inside a paper drawing.</td>
+</tr>
+<tr>
+<td align="left"><strong>Docker Container</strong></td>
+<td align="left"><strong>Constructed Living Room</strong></td>
+<td align="left">Built directly from the blueprint. Multiple rooms can be built from one drawing instantly.</td>
+</tr>
+<tr>
+<td align="left"><strong>Docker Volume</strong></td>
+<td align="left"><strong>Basement Storage Locker</strong></td>
+<td align="left">Located outside the apartment room. If the room burns down (container destroyed), items in the storage locker remain intact.</td>
+</tr>
+<tr>
+<td align="left"><strong>Docker Network</strong></td>
+<td align="left"><strong>Internal Intercom System</strong></td>
+<td align="left">Wire between Room 1 and Room 2. Allows occupants to talk internally without opening front doors.</td>
+</tr>
+<tr>
+<td align="left"><strong>Nginx Proxy</strong></td>
+<td align="left"><strong>Front Desk Concierge</strong></td>
+<td align="left">Stands at the building entrance. Greets visitors, checks credentials (SSL), and routes people to Room 1 (SPA) or Room 2 (Sockets).</td>
+</tr>
+<tr>
+<td align="left"><strong>DNS (Route 53)</strong></td>
+<td align="left"><strong>GPS Address Book</strong></td>
+<td align="left">Converts &quot;Excalidraw Headquarters&quot; into exact latitude/longitude numerical coordinates (<code>54.210.45.12</code>).</td>
+</tr>
+<tr>
+<td align="left"><strong>SSL / TLS</strong></td>
+<td align="left"><strong>Armored Briefcase Security</strong></td>
+<td align="left">Encrypts messages passed between visitors and concierge so spies in the lobby can&#39;t read them.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>PART 14: Visual Architecture &amp; Flow Diagrams</h2>
+<h3>Diagram 1: Comprehensive System Architecture</h3>
+<p>This Mermaid diagram illustrates the exact production stack deployed on AWS:</p>
+<div class="mermaid">flowchart TD
+    subgraph ClientLayer ["Client Layer"]
+        UserBrowser["User Web Browser (Chrome / Firefox)"]
+    end
+
+    subgraph ExternalServices ["External Edge Services"]
+        DNS["Route 53 / DNS Resolver (draw.yourdomain.com -> 54.210.45.12)"]
+        LECA["Let's Encrypt Certificate Authority (ACME Protocol)"]
+        ECR["AWS ECR (Container Image Registry)"]
+    end
+
+    subgraph AWSCloud ["AWS Cloud (us-east-1)"]
+        subgraph EC2Instance ["EC2 Instance (t2.micro - Ubuntu 24.04 LTS)"]
+            subgraph SecurityGroup ["Security Group Firewall (excalidraw-sg)"]
+                Port22["Port 22 (SSH - Admin Only)"]
+                Port80["Port 80 (HTTP - Public)"]
+                Port443["Port 443 (HTTPS - Public)"]
+            end
+
+            subgraph DockerEngine ["Docker Engine & Compose Runtime"]
+                subgraph ProxyContainer ["nginx-proxy Container (:80, :443)"]
+                    NginxCore["Nginx Core Process"]
+                end
+
+                subgraph InternalNet ["Docker Network (excalidraw-net)"]
+                    AppContainer["excalidraw-app Container (:80) Static React SPA"]
+                    RoomContainer["excalidraw-room Container (:3002) Socket.IO Collaboration"]
+                end
+
+                subgraph CertbotContainer ["certbot Container"]
+                    CertbotTask["Certbot Renewal Task (Every 12h)"]
+                end
+
+                subgraph StorageVolumes ["Persistent Volumes"]
+                    CertConf["certbot-conf (/etc/letsencrypt)"]
+                    CertWWW["certbot-www (/var/www/certbot)"]
+                end
+            end
+        end
+    end
+
+    %% User Flow
+    UserBrowser -->|"1. Resolve Domain"| DNS
+    UserBrowser -->|"2. HTTPS Request :443"| Port443
+    Port443 --> NginxCore
+
+    %% Proxy Internal Routing
+    NginxCore -->|"3a. Proxy HTTP GET /"| AppContainer
+    NginxCore -->|"3b. Proxy WS /socket.io/"| RoomContainer
+
+    %% SSL & Volumes
+    CertbotTask -->|"Renew Certs"| CertConf
+    NginxCore -.->|"Read Certs (ro)"| CertConf
+    LECA <-->|"ACME HTTP-01 Challenge"| Port80
+    Port80 --> CertWWW
+    CertbotTask --> CertWWW
+
+    %% Image Pull
+    AppContainer -.->|"Pull Container Image"| ECR
+</div>
+<hr>
+<h3>Diagram 2: User Request Sequence Flow</h3>
+<p>This sequence diagram traces a user opening Excalidraw and collaborating in real-time:</p>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor User as User Browser
+    participant DNS as Route 53 DNS
+    participant Nginx as Nginx Proxy (:443)
+    participant App as excalidraw-app (:80)
+    participant Room as excalidraw-room (:3002)
+
+    %% Step 1: DNS
+    User->>DNS: Resolve draw.yourdomain.com
+    DNS-->>User: Return 54.210.45.12
+
+    %% Step 2: TLS Handshake
+    User->>Nginx: Client Hello (TCP Port 443)
+    Nginx-->>User: Server Hello + SSL Certificate (fullchain.pem)
+    Note over User,Nginx: Negotiate Symmetric AES-GCM Session Key
+
+    %% Step 3: Serve SPA Static Assets
+    User->>Nginx: GET / (Encrypted HTTPS)
+    Nginx->>App: Proxy GET http://excalidraw:80/
+    App-->>Nginx: Return index.html + Compiled JS/CSS Bundles
+    Nginx-->>User: Deliver Encrypted React App Bundle
+
+    %% Step 4: WebSockets Collaboration
+    Note over User: User opens whiteboard room
+    User->>Nginx: GET /socket.io/?EIO=4 (Upgrade: websocket)
+    Nginx->>Room: Proxy HTTP Upgrade Request to http://excalidraw-room:3002
+    Room-->>Nginx: HTTP 101 Switching Protocols
+    Nginx-->>User: HTTP 101 Switching Protocols (Full-Duplex WS Established)
+
+    loop Real-Time Collaboration
+        User->>Nginx: Send Encrypted Draw Delta Event
+        Nginx->>Room: Forward WS Frame
+        Room-->>Nginx: Broadcast Delta to Room Peer Containers
+        Nginx-->>User: Broadcast Encrypted Delta to Peer Browsers
+    end
+</div>
+<hr>
+<h3>Diagram 3: Chronological Deployment Sequence</h3>
+<p>This sequence diagram details the full lifecycle of setting up the deployment:</p>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor Dev as Developer Laptop
+    participant AWS as AWS Console / CLI
+    participant ECR as AWS ECR
+    participant EC2 as AWS EC2 Server
+    participant LE as Let's Encrypt CA
+
+    Dev->>AWS: 1. Create ECR Repo + Launch EC2 t2.micro
+    AWS-->>Dev: EC2 Instance Ready (Public IP: 54.210.45.12)
+    Dev->>ECR: 2. docker build & docker push excalidraw:latest
+    ECR-->>Dev: Image Pushed Successfully
+
+    Dev->>EC2: 3. SSH into EC2 & run setup.sh
+    Note over EC2: Install Docker, UFW, create 2GB Swap file
+
+    Dev->>EC2: 4. Execute certbot-init.sh
+    EC2->>LE: Request ACME HTTP-01 Challenge for Domain
+    LE->>EC2: Fetch http://domain/.well-known/acme-challenge/token
+    EC2-->>LE: Return Valid Token
+    LE-->>EC2: Issue Signed TLS Certificate (fullchain.pem)
+
+    Dev->>EC2: 5. Execute deploy.sh
+    EC2->>ECR: Pull excalidraw:latest container image
+    Note over EC2: Launch docker compose stack (4 containers)
+    EC2-->>Dev: Deployment Successful! HTTPS OK (200)
+</div>
+<hr>
+<h2>🔒 Chapter 6 Mini-Quiz</h2>
+<ol>
+<li><p><strong>In our apartment building mental model, what component corresponds to the Front Desk Receptionist Concierge?</strong></p>
+<ul>
+<li>A) AWS EC2</li>
+<li>B) Nginx Reverse Proxy Container</li>
+<li>C) Docker Volume</li>
+<li>D) Git Commit</li>
+</ul>
+</li>
+<li><p><strong>In Diagram 2 (Request Sequence Flow), why does Nginx return <code>HTTP 101 Switching Protocols</code> when proxying <code>/socket.io/</code>?</strong></p>
+<ul>
+<li>A) To report a server crash</li>
+<li>B) To confirm that the HTTP connection has been upgraded to a persistent, full-duplex WebSocket connection</li>
+<li>C) To redirect traffic from HTTP to HTTPS</li>
+<li>D) To request a new password</li>
+</ul>
+</li>
+<li><p><strong>What happens to data stored in a Docker Volume when a Docker Container is deleted and recreated?</strong></p>
+<ul>
+<li>A) The volume data is deleted instantly</li>
+<li>B) The volume data remains completely intact on the host storage filesystem</li>
+<li>C) The volume data is uploaded to GitHub</li>
+<li>D) The volume is converted into an AMI</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>explore the Cloud Career Roadmap and deployment Vocabulary Dictionary!</p>
+<hr>
+<h1>Module 7: Cloud Engineering Roadmap &amp; Deployment Vocabulary Dictionary</h1>
+<hr>
+<h2>PART 15: The Zero-to-Hero Cloud Engineering Roadmap</h2>
+<p>To become a professional Cloud Engineer or DevOps Architect, you must build skills in a logical, cumulative order. Attempting to learn advanced tools like Kubernetes or Terraform without first understanding Linux and Networking is like trying to build a skyscraper on soft mud.</p>
+<p>Here is the recommended 10-step career learning path:</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                      CLOUD ENGINEERING LEARNING PATH                   │
+│                                                                        │
+│ [1. Linux] ──► [2. Networking] ──► [3. Git] ──► [4. Docker] ──► [5. AWS]│
+│                                                                        │
+│ [10. Security] ◄── [9. Monitor] ◄── [8. CI/CD] ◄── [7. K8s] ◄── [6. IaC]│
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h3>Step-by-Step Learning Order Rationale</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Step</th>
+<th align="left">Subject Area</th>
+<th align="left">Core Technologies</th>
+<th align="left">Why It Comes In This Specific Order</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>1</strong></td>
+<td align="left"><strong>Linux Systems</strong></td>
+<td align="left">Ubuntu, Bash, Systemd, SSH, FHS, <code>chmod</code>, <code>cron</code></td>
+<td align="left"><strong>The Foundation</strong>: 90%+ of cloud servers run Linux. You cannot manage servers if you don&#39;t know how to navigate the command line.</td>
+</tr>
+<tr>
+<td align="left"><strong>2</strong></td>
+<td align="left"><strong>Networking</strong></td>
+<td align="left">TCP/IP, Ports, DNS, HTTP/S, Subnets, Firewalls</td>
+<td align="left"><strong>The Piping</strong>: Cloud computing <em>is</em> networked computing. You must understand how data packets move before connecting cloud servers.</td>
+</tr>
+<tr>
+<td align="left"><strong>3</strong></td>
+<td align="left"><strong>Git &amp; Source Control</strong></td>
+<td align="left">Git, GitHub, Branching, Commits, Pull Requests</td>
+<td align="left"><strong>Collaboration &amp; History</strong>: Every configuration file, script, and infrastructure template must be version-controlled in Git.</td>
+</tr>
+<tr>
+<td align="left"><strong>4</strong></td>
+<td align="left"><strong>Containerization</strong></td>
+<td align="left">Docker Engine, Dockerfiles, Compose, Volumes</td>
+<td align="left"><strong>Packaging</strong>: Before deploying applications to the cloud, you must package them into deterministic container images.</td>
+</tr>
+<tr>
+<td align="left"><strong>5</strong></td>
+<td align="left"><strong>Cloud Core (AWS)</strong></td>
+<td align="left">EC2, VPC, IAM, S3, ECR, Elastic IP, Security Groups</td>
+<td align="left"><strong>Cloud Foundations</strong>: Mastering basic cloud primitives (Compute, Storage, Networking, Identity) on AWS.</td>
+</tr>
+<tr>
+<td align="left"><strong>6</strong></td>
+<td align="left"><strong>Infrastructure as Code</strong></td>
+<td align="left">Terraform, OpenTofu, AWS CloudFormation</td>
+<td align="left"><strong>Automation</strong>: Replacing manual AWS Console point-and-clicking with code files that provision infrastructure automatically.</td>
+</tr>
+<tr>
+<td align="left"><strong>7</strong></td>
+<td align="left"><strong>Container Orchestration</strong></td>
+<td align="left">Kubernetes (K8s), AWS EKS, Helm</td>
+<td align="left"><strong>Scale</strong>: Managing hundreds of Docker containers across clusters of virtual servers with auto-healing and auto-scaling.</td>
+</tr>
+<tr>
+<td align="left"><strong>8</strong></td>
+<td align="left"><strong>CI/CD Pipelines</strong></td>
+<td align="left">GitHub Actions, GitLab CI, ArgoCD</td>
+<td align="left"><strong>Deployment Automation</strong>: Automatically building, testing, and deploying code to AWS every time a developer git-pushes.</td>
+</tr>
+<tr>
+<td align="left"><strong>9</strong></td>
+<td align="left"><strong>Observability</strong></td>
+<td align="left">Prometheus, Grafana, Datadog, ELK Stack</td>
+<td align="left"><strong>Visibility</strong>: Monitoring CPU/RAM usage, collecting application logs, and setting up pager alerts for when production crashes.</td>
+</tr>
+<tr>
+<td align="left"><strong>10</strong></td>
+<td align="left"><strong>Cloud Security</strong></td>
+<td align="left">DevSecOps, Vault, IAM Least Privilege, SAST</td>
+<td align="left"><strong>Hardening</strong>: Encrypting data at rest and in transit, auditing access, and scanning for vulnerabilities.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>PART 16: Deployment Vocabulary Dictionary</h2>
+<p>Below are 120+ technical terms encountered during our Excalidraw AWS deployment, defined simply with deployment examples:</p>
+<h3>1. Cloud &amp; Infrastructure (AWS)</h3>
+<ol>
+<li><strong>AMI (Amazon Machine Image)</strong>: A pre-configured operating system template used to launch EC2 instances. <em>Example: We selected <code>Ubuntu 24.04 LTS</code> as our AMI.</em></li>
+<li><strong>AWS (Amazon Web Services)</strong>: On-demand cloud computing platform provided by Amazon. <em>Example: We used AWS to host our server and container registry.</em></li>
+<li><strong>AWS CLI</strong>: Command-line interface to interact with AWS services via terminal scripts. <em>Example: Executed <code>aws ecr get-login-password</code> to log in.</em></li>
+<li><strong>CapEx (Capital Expenditure)</strong>: Upfront money spent on physical assets. <em>Example: Buying physical servers on-prem is CapEx; renting EC2 is OpEx.</em></li>
+<li><strong>EBS (Elastic Block Store)</strong>: Network-attached persistent block storage for EC2. <em>Example: We attached a 30 GB <code>gp3</code> EBS volume to our instance.</em></li>
+<li><strong>EC2 (Elastic Compute Cloud)</strong>: Virtual server running in AWS data centers. <em>Example: Launched an <code>excalidraw-prod</code> EC2 instance.</em></li>
+<li><strong>ECR (Elastic Container Registry)</strong>: Private Docker container image registry in AWS. <em>Example: Pushed <code>excalidraw:latest</code> to ECR.</em></li>
+<li><strong>Elastic IP</strong>: Permanent static public IPv4 address reserved for your AWS account. <em>Example: Bound Elastic IP <code>54.210.45.12</code> to our instance.</em></li>
+<li><strong>Free Tier</strong>: AWS discount program offering 750 free hours/month of <code>t2.micro</code> for 12 months. <em>Example: Our deployment ran at $0 cost.</em></li>
+<li><strong>IAM (Identity &amp; Access Management)</strong>: AWS service managing access permissions. <em>Example: Created <code>excalidraw-ec2-role</code> to grant ECR read access.</em></li>
+<li><strong>IAM Role</strong>: An IAM identity with specific permissions attached to AWS resources. <em>Example: Attached ECR read role to our EC2 instance profile.</em></li>
+<li><strong>Instance Type</strong>: Hardware allocation specification for EC2. <em>Example: <code>t2.micro</code> provides 1 vCPU and 1 GiB RAM.</em></li>
+<li><strong>Key Pair</strong>: Public/Private cryptographic keys used to secure SSH access. <em>Example: Downloaded <code>excalidraw-key.pem</code> to log in via terminal.</em></li>
+<li><strong>OpEx (Operational Expenditure)</strong>: Ongoing operational expenses paid over time. <em>Example: Paying $0.0116/hour for an EC2 server is OpEx.</em></li>
+<li><strong>Region</strong>: Geographical location containing multiple data centers. <em>Example: Deployed in <code>us-east-1</code> (N. Virginia).</em></li>
+<li><strong>Security Group</strong>: Virtual firewall controlling network traffic to an EC2 instance. <em>Example: <code>excalidraw-sg</code> allowed ports 22, 80, and 443.</em></li>
+<li><strong>t2.micro</strong>: Low-cost burstable EC2 instance tier eligible for free usage. <em>Example: Our single server ran on <code>t2.micro</code>.</em></li>
+<li><strong>vCPU</strong>: Virtual Central Processing Unit core allocated by hypervisor. <em>Example: <code>t2.micro</code> features 1 vCPU.</em></li>
+<li><strong>VPC (Virtual Private Cloud)</strong>: Isolated virtual network within AWS. <em>Example: EC2 instance launched inside default VPC.</em></li>
+</ol>
+<hr>
+<h3>2. Operating System &amp; Linux</h3>
+<ol start="20">
+<li><strong>APT (Advanced Package Tool)</strong>: Package management utility for Debian/Ubuntu Linux. <em>Example: <code>apt-get install docker-ce</code>.</em></li>
+<li><strong>Bash</strong>: Default Unix shell command language interpreter. <em>Example: Wrote installation instructions in <code>setup.sh</code>.</em></li>
+<li><strong>chmod</strong>: Command to change file access permissions. <em>Example: <code>chmod 400 key.pem</code>.</em></li>
+<li><strong>chown</strong>: Command to change file ownership user and group. <em>Example: <code>chown -R ubuntu:ubuntu /opt/excalidraw</code>.</em></li>
+<li><strong>CLI (Command Line Interface)</strong>: Text-based interface used to manage software. <em>Example: Configured Ubuntu using the SSH terminal CLI.</em></li>
+<li><strong>cron</strong>: Time-based job scheduler in Unix OS. <em>Example: Scheduled automatic TLS certificate check every 12 hours.</em></li>
+<li><strong>fail2ban</strong>: Intrusion prevention software blocking brute-force IP attacks. <em>Example: Banned IPs with 5 failed SSH password attempts.</em></li>
+<li><strong>FHS (Filesystem Hierarchy Standard)</strong>: Standardized directory structure layout for Linux. <em>Example: Placed app files in <code>/opt/excalidraw</code> per FHS.</em></li>
+<li><strong>fallocate</strong>: Command to allocate space for a file instantly. <em>Example: Created 2 GB swap file using <code>fallocate -l 2G /swapfile</code>.</em></li>
+<li><strong>Kernel</strong>: Core program of an OS managing CPU, RAM, and hardware devices. <em>Example: Docker containers share the host Linux kernel.</em></li>
+<li><strong>OOM (Out Of Memory)</strong>: Condition when system runs out of physical RAM. <em>Example: High memory usage triggered the OOM killer on <code>t2.micro</code>.</em></li>
+<li><strong>OOM Killer</strong>: Linux kernel mechanism that terminates memory-heavy processes. <em>Example: Killed Node process when RAM exceeded 100%.</em></li>
+<li><strong>root</strong>: Superuser account with unlimited system privileges. <em>Example: Executed <code>setup.sh</code> with <code>sudo</code> root rights.</em></li>
+<li><strong>SSH (Secure Shell)</strong>: Encrypted protocol operating on Port 22 for remote administration. <em>Example: <code>ssh -i key.pem ubuntu@ip</code>.</em></li>
+<li><strong>sudo</strong>: Executing commands with superuser privileges. <em>Example: <code>sudo apt-get update</code>.</em></li>
+<li><strong>Swap File</strong>: Disk file used as virtual RAM when physical RAM fills up. <em>Example: Configured 2 GB swap to prevent server crashes.</em></li>
+<li><strong>systemd</strong>: System and service manager for Linux OS. <em>Example: Managed <code>excalidraw.service</code> autostart daemon.</em></li>
+<li><strong>systemctl</strong>: Command-line tool to control <code>systemd</code> services. <em>Example: <code>systemctl status docker</code>.</em></li>
+<li><strong>Ubuntu</strong>: Popular open-source Debian-based Linux distribution. <em>Example: Used Ubuntu 24.04 LTS as server OS.</em></li>
+<li><strong>UFW (Uncomplicated Firewall)</strong>: Friendly CLI interface to manage iptables firewall. <em>Example: <code>ufw allow 443/tcp</code>.</em></li>
+<li><strong>journalctl</strong>: Query tool to view systemd journal logs. <em>Example: <code>journalctl -u excalidraw -f</code>.</em></li>
+</ol>
+<hr>
+<h3>3. Containerization &amp; Docker</h3>
+<ol start="41">
+<li><strong>Alpine Linux</strong>: Ultra-lightweight 5 MB security-oriented Linux distribution. <em>Example: Used <code>nginx:stable-alpine-slim</code> base image.</em></li>
+<li><strong>Base Image</strong>: Starting template image in a Dockerfile. <em>Example: <code>FROM node:20-alpine</code>.</em></li>
+<li><strong>Build Arguments</strong>: Variables passed to Docker at image build time. <em>Example: Passed <code>--build-arg GIT_SHA=abc1234</code>.</em></li>
+<li><strong>Container</strong>: Lightweight runnable execution instance of a Docker image. <em>Example: <code>excalidraw-app</code> container running in RAM.</em></li>
+<li><strong>Docker</strong>: Platform for developing, shipping, and running applications in containers. <em>Example: Wrapped Excalidraw into Docker containers.</em></li>
+<li><strong>Docker Compose</strong>: Tool for defining and running multi-container applications. <em>Example: Managed stack via <code>docker-compose.ec2.yml</code>.</em></li>
+<li><strong>Docker Daemon</strong>: Background service (<code>dockerd</code>) managing containers and networks. <em>Example: Daemon started containers on boot.</em></li>
+<li><strong>Docker Engine</strong>: Core software suite containing Daemon, API, and CLI. <em>Example: Installed official Docker Engine from Docker APT repo.</em></li>
+<li><strong>Dockerfile</strong>: Text document containing commands to assemble a Docker image. <em>Example: Dockerfile compiled Vite build into static assets.</em></li>
+<li><strong>Docker Image</strong>: Read-only template containing application code and libraries. <em>Example: Pulled Excalidraw image from ECR.</em></li>
+<li><strong>Docker Network</strong>: Isolated virtual network allowing inter-container communication. <em>Example: Connected services via <code>excalidraw-net</code>.</em></li>
+<li><strong>Docker Volume</strong>: Persistent data directory stored outside container filesystem. <em>Example: Mounted <code>certbot-conf</code> volume for SSL keys.</em></li>
+<li><strong>Entrypoint</strong>: Script or command executed when a container boots up. <em>Example: <code>docker-entrypoint.sh</code> injected runtime env variables.</em></li>
+<li><strong>Environment Variables</strong>: Dynamic values passed into containers at runtime. <em>Example: Injected <code>VITE_APP_WS_SERVER_URL</code> into container.</em></li>
+<li><strong>Ephemeral</strong>: Short-lived or non-persistent. <em>Example: Containers are ephemeral; data lost unless saved to volumes.</em></li>
+<li><strong>Healthcheck</strong>: Automated test command verifying if container process is healthy. <em>Example: Checked <code>wget http://localhost/health</code> every 30s.</em></li>
+<li><strong>Hypervisor</strong>: Software running virtual machines on physical hardware. <em>Example: AWS Nitro Hypervisor sliced server into EC2 instances.</em></li>
+<li><strong>Layer</strong>: Immutable filesystem change in a Docker image. <em>Example: Each Dockerfile command creates a cached image layer.</em></li>
+<li><strong>Multi-Stage Build</strong>: Docker build technique minimizing final image size. <em>Example: Built React code in Node stage, copied static files to Nginx.</em></li>
+<li><strong>Port Mapping</strong>: Binding container internal ports to host system ports. <em>Example: Mapped <code>&quot;80:80&quot;</code> and <code>&quot;443:443&quot;</code> on host.</em></li>
+<li><strong>Registry</strong>: Server storage repository for container images. <em>Example: AWS ECR and Docker Hub are container registries.</em></li>
+<li><strong>Restart Policy</strong>: Rule instructing Docker when to restart crashed containers. <em>Example: <code>restart: unless-stopped</code>.</em></li>
+<li><strong>Tag</strong>: Version label assigned to a container image. <em>Example: Tagged image as <code>excalidraw:latest</code> and <code>excalidraw:abc1234</code>.</em></li>
+</ol>
+<hr>
+<h3>4. Web Servers, Networking &amp; Protocols</h3>
+<ol start="64">
+<li><strong>A Record</strong>: DNS record mapping a domain name to an IPv4 address. <em>Example: Mapped <code>draw.yourdomain.com → 54.210.45.12</code>.</em></li>
+<li><strong>ACME Protocol</strong>: Automated Certificate Management Environment protocol. <em>Example: Certbot used ACME to request certs from Let&#39;s Encrypt.</em></li>
+<li><strong>C10K Problem</strong>: Challenge of handling 10,000 concurrent web connections. <em>Example: Nginx solved C10K via asynchronous event loops.</em></li>
+<li><strong>Certbot</strong>: Free open-source software tool to request and renew Let&#39;s Encrypt certs. <em>Example: Managed SSL certs using Certbot container.</em></li>
+<li><strong>CNAME</strong>: DNS record aliasing one domain to another domain. <em>Example: Pointed <code>www.example.com</code> to <code>example.com</code>.</em></li>
+<li><strong>DH Parameters</strong>: Diffie-Hellman parameters strengthening key exchange security. <em>Example: Generated <code>ssl-dhparams.pem</code> for Nginx.</em></li>
+<li><strong>dig</strong>: Command-line DNS lookup utility tool. <em>Example: Verified DNS resolution using <code>dig +short draw.yourdomain.com</code>.</em></li>
+<li><strong>DNS (Domain Name System)</strong>: Internet directory converting domain names to IP addresses. <em>Example: DNS resolved hostname to server IP.</em></li>
+<li><strong>Domain Name</strong>: Human-readable web address. <em>Example: <code>draw.yourdomain.com</code>.</em></li>
+<li><strong>Forward Proxy</strong>: Proxy server routing outbound requests for client devices. <em>Example: Corporate VPN proxy hiding user IPs.</em></li>
+<li><strong>FQD (Fully Qualified Domain Name)</strong>: Complete exact domain address specification. <em>Example: <code>draw.yourdomain.com.</code></em></li>
+<li><strong>Gzip</strong>: File compression format reducing asset transfer sizes over HTTP. <em>Example: Enabled Nginx <code>gzip on</code> for JS/CSS files.</em></li>
+<li><strong>HTTP (Hypertext Transfer Protocol)</strong>: Unencrypted web communication protocol operating on Port 80. <em>Example: Plain HTTP redirected to HTTPS.</em></li>
+<li><strong>HTTP 301</strong>: Permanent HTTP redirect response status code. <em>Example: Nginx returned 301 redirect from HTTP to HTTPS.</em></li>
+<li><strong>HTTPS</strong>: Encrypted HTTP over TLS operating on Port 443. <em>Example: Secured Excalidraw with HTTPS encryption.</em></li>
+<li><strong>IP Address</strong>: Numerical label assigned to devices connected to a computer network. <em>Example: <code>54.210.45.12</code>.</em></li>
+<li><strong>Let&#39;s Encrypt</strong>: Free automated public Certificate Authority. <em>Example: Issued signed TLS certificate for our domain.</em></li>
+<li><strong>Load Balancing</strong>: Distributing incoming network traffic across multiple servers. <em>Example: Nginx load-balanced backend requests.</em></li>
+<li><strong>Nginx</strong>: High-performance HTTP server and reverse proxy. <em>Example: Used Nginx as <code>nginx-proxy</code> container.</em></li>
+<li><strong>nip.io</strong>: Wildcard DNS service mapping IP addresses to hostnames. <em>Example: Used <code>54-210-45-12.nip.io</code> during testing.</em></li>
+<li><strong>OCSP Stapling</strong>: Performance optimization for checking SSL certificate validity. <em>Example: Configured <code>ssl_stapling on</code> in Nginx.</em></li>
+<li><strong>Port 22</strong>: Default network port for SSH administration. <em>Example: Restricted Port 22 access to admin IP only.</em></li>
+<li><strong>Port 80</strong>: Default network port for unencrypted HTTP traffic. <em>Example: Port 80 handled ACME challenges.</em></li>
+<li><strong>Port 443</strong>: Default network port for encrypted HTTPS traffic. <em>Example: Port 443 served secure Excalidraw traffic.</em></li>
+<li><strong>Port 3002</strong>: Internal network port for Socket.IO collaboration server. <em>Example: Nginx proxied <code>/socket.io/</code> to internal port 3002.</em></li>
+<li><strong>Private IP</strong>: Non-routable internal network IP address. <em>Example: Server private IP was <code>172.31.16.4</code>.</em></li>
+<li><strong>Public IP</strong>: Globally unique internet-routable IP address. <em>Example: Elastic IP <code>54.210.45.12</code>.</em></li>
+<li><strong>Rate Limiting</strong>: Restricting maximum incoming request rate per IP. <em>Example: Nginx capped requests to 20 req/s to prevent DDoS.</em></li>
+<li><strong>Reverse Proxy</strong>: Server proxying inbound public requests to internal services. <em>Example: Nginx proxied traffic to Excalidraw containers.</em></li>
+<li><strong>Socket.IO</strong>: Real-time bidirectional event-based communication library. <em>Example: Handled multi-user whiteboard sync in <code>excalidraw-room</code>.</em></li>
+<li><strong>SSL (Secure Sockets Layer)</strong>: Legacy encryption protocol predecessor to TLS. <em>Example: Commonly referred to as SSL/TLS certificates.</em></li>
+<li><strong>SSL Termination</strong>: Decrypting HTTPS traffic at proxy level before passing to backend. <em>Example: Nginx handled SSL termination on Port 443.</em></li>
+<li><strong>TLS (Transport Layer Security)</strong>: Modern cryptographic protocol securing internet communications. <em>Example: Enforced TLS 1.2 and 1.3.</em></li>
+<li><strong>TTL (Time To Live)</strong>: Expiration timer setting for cached DNS records. <em>Example: Set DNS record TTL to 300 seconds.</em></li>
+<li><strong>WebSockets</strong>: Persistent full-duplex TCP communication protocol over web connections. <em>Example: Proxied WebSockets via Nginx Upgrade headers.</em></li>
+</ol>
+<hr>
+<h3>5. Source Control, Build &amp; Development</h3>
+<ol start="99">
+<li><strong>Branch</strong>: Independent line of development in Git. <em>Example: Merged feature branch into <code>main</code>.</em></li>
+<li><strong>Clone</strong>: Downloading a local copy of a remote Git repository. <em>Example: Cloned repository to <code>/opt/excalidraw/repo</code>.</em></li>
+<li><strong>Commit</strong>: Saved snapshot checkpoint of changes in Git history. <em>Example: Identified image deployment via Git SHA <code>abc1234</code>.</em></li>
+<li><strong>DOS2UNIX</strong>: Utility tool converting Windows CRLF line endings to Unix LF. <em>Example: Converted <code>setup.sh</code> line endings.</em></li>
+<li><strong>Firebase</strong>: Backend-as-a-Service platform providing Firestore database and storage. <em>Example: Excalidraw stored drawing files in Firebase.</em></li>
+<li><strong>Git</strong>: Distributed version control system tracking code changes. <em>Example: Tracked deployment script updates in Git.</em></li>
+<li><strong>GitHub</strong>: Cloud hosting platform for Git repositories. <em>Example: Cloned Excalidraw source code from GitHub.</em></li>
+<li><strong>Git SHA</strong>: Unique 40-character SHA-1 hash identifying a specific commit. <em>Example: Tagged Docker container image with short SHA <code>abc1234</code>.</em></li>
+<li><strong>Node.js</strong>: Asynchronous event-driven JavaScript runtime engine. <em>Example: Ran <code>excalidraw-room</code> collaboration server on Node.js.</em></li>
+<li><strong>Origin</strong>: Default remote repository nickname in Git. <em>Example: Pulled latest code from <code>origin main</code>.</em></li>
+<li><strong>React</strong>: Frontend JavaScript library for building component-based UIs. <em>Example: Excalidraw user interface was built using React.</em></li>
+<li><strong>Repository</strong>: Main project directory tracked by Git version control. <em>Example: Cloned project repository to server.</em></li>
+<li><strong>Single Page Application (SPA)</strong>: Web app loading a single HTML page dynamically. <em>Example: Excalidraw compiled into static SPA assets.</em></li>
+<li><strong>Vite</strong>: Ultra-fast modern frontend build tool and development server. <em>Example: Vite bundled Excalidraw React source code into static JS.</em></li>
+<li><strong>Webroot</strong>: Root file directory on web server serving public web files. <em>Example: Certbot wrote ACME tokens to <code>/var/www/certbot</code>.</em></li>
+</ol>
+<hr>
+<h2>🔒 Chapter 7 Mini-Quiz</h2>
+<ol>
+<li><p><strong>Why is learning Linux Administration listed as Step 1 in the Cloud Engineering Roadmap?</strong></p>
+<ul>
+<li>A) Because Linux is owned by Amazon</li>
+<li>B) Because 90%+ of cloud infrastructure runs Linux, making command-line navigation and file management foundational prerequisites</li>
+<li>C) Because Docker cannot run without Windows</li>
+<li>D) Because Linux is required to register domain names</li>
+</ul>
+</li>
+<li><p><strong>In our vocabulary dictionary, what is the exact function of an <strong>A Record</strong> in DNS?</strong></p>
+<ul>
+<li>A) It encrypts passwords with 256-bit keys</li>
+<li>B) It maps a human-readable domain name directly to an IPv4 address</li>
+<li>C) It allocates an EC2 instance in AWS</li>
+<li>D) It restarts crashed Docker containers</li>
+</ul>
+</li>
+<li><p><strong>What is the difference between CapEx and OpEx in cloud finance?</strong></p>
+<ul>
+<li>A) CapEx is paid to Google; OpEx is paid to AWS</li>
+<li>B) CapEx is upfront capital purchase of hardware; OpEx is ongoing pay-as-you-go operational expenses</li>
+<li>C) CapEx applies to software; OpEx applies to memory</li>
+<li>D) There is no difference</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>practice 60 technical interview questions and answers!</p>
+<hr>
+<h1>Module 8: Cloud &amp; DevOps Technical Interview Preparation</h1>
+<hr>
+<h2>PART 17: 60 Targeted Technical Interview Questions &amp; Answers</h2>
+<p>This chapter prepares you for cloud engineering, DevOps, and systems administration job interviews. Questions are divided into <strong>Beginner (1–25)</strong>, <strong>Intermediate (26–50)</strong>, and <strong>Scenario-Based (51–60)</strong>.</p>
+<hr>
+<h3>Section 1: Beginner Questions (1–25)</h3>
+<h4>Q1: What is the difference between an IP address and a domain name?</h4>
+<p><strong>Answer</strong>: An IP address is a unique numerical address (e.g. <code>54.210.45.12</code>) used by computers to route data packets across networks. A domain name (e.g. <code>draw.example.com</code>) is a human-readable alias mapped to an IP address via DNS.</p>
+<h4>Q2: What is AWS EC2?</h4>
+<p><strong>Answer</strong>: AWS Elastic Compute Cloud (EC2) is a cloud web service providing resizable virtual machines (virtual servers) on demand.</p>
+<h4>Q3: What is the role of an Operating System Kernel?</h4>
+<p><strong>Answer</strong>: The kernel is the core component of an OS that acts as a bridge between running applications and the physical hardware (CPU, RAM, Disks, Network interfaces).</p>
+<h4>Q4: Why do we use SSH on Port 22?</h4>
+<p><strong>Answer</strong>: SSH (Secure Shell) provides an encrypted cryptographic channel for remote terminal administration over unsecured networks.</p>
+<h4>Q5: What is the difference between <code>root</code> and a standard Linux user?</h4>
+<p><strong>Answer</strong>: The <code>root</code> account is the ultimate administrator with unrestricted access to all system files and commands. A standard user has restricted permissions to protect system files.</p>
+<h4>Q6: What does the <code>sudo</code> command do?</h4>
+<p><strong>Answer</strong>: <code>sudo</code> (SuperUser DO) allows authorized unprivileged users to execute a single command with root administrative privileges.</p>
+<h4>Q7: What is Docker?</h4>
+<p><strong>Answer</strong>: Docker is an open-source platform that packages software and all its runtime dependencies into standardized, lightweight, isolated units called containers.</p>
+<h4>Q8: What is the difference between a Virtual Machine and a Docker Container?</h4>
+<p><strong>Answer</strong>: Virtual Machines bundle a full guest operating system and virtualized hardware via a hypervisor. Docker containers share the host operating system kernel and isolate only user-space processes, making them faster and lighter.</p>
+<h4>Q9: What is a Docker Image?</h4>
+<p><strong>Answer</strong>: A Docker Image is an immutable, read-only template containing application code, libraries, dependencies, and configuration used to instantiate containers.</p>
+<h4>Q10: What is Docker Compose?</h4>
+<p><strong>Answer</strong>: Docker Compose is an orchestration tool used to define, configure, and run multi-container Docker applications using a single declarative YAML file.</p>
+<h4>Q11: What is a Reverse Proxy?</h4>
+<p><strong>Answer</strong>: A reverse proxy sits in front of backend servers, receiving incoming public client requests and routing them to appropriate internal backend services.</p>
+<h4>Q12: Why do we use Nginx in front of web applications?</h4>
+<p><strong>Answer</strong>: Nginx handles high-concurrency requests, terminates TLS/SSL encryption, serves static assets efficiently, enforces rate limiting, and proxies requests to backend containers.</p>
+<h4>Q13: What is the difference between HTTP and HTTPS?</h4>
+<p><strong>Answer</strong>: HTTP (Port 80) transmits payload data in unencrypted cleartext. HTTPS (Port 443) encrypts payloads using TLS/SSL encryption to prevent tampering and eavesdropping.</p>
+<h4>Q14: What is an SSL/TLS Certificate?</h4>
+<p><strong>Answer</strong>: A digital cryptographic document issued by a Certificate Authority (CA) that binds a public encryption key to a domain identity.</p>
+<h4>Q15: What is Let&#39;s Encrypt?</h4>
+<p><strong>Answer</strong>: A free, automated, open Certificate Authority that issues trusted TLS certificates via automated protocols like ACME.</p>
+<h4>Q16: What is DNS?</h4>
+<p><strong>Answer</strong>: The Domain Name System (DNS) is the internet&#39;s decentralized phonebook that translates hostnames into IP addresses.</p>
+<h4>Q17: What is an A Record in DNS?</h4>
+<p><strong>Answer</strong>: A DNS record type that maps a domain name directly to an IPv4 address.</p>
+<h4>Q18: What is Git?</h4>
+<p><strong>Answer</strong>: A distributed version control system that tracks changes in source code files over time.</p>
+<h4>Q19: What is the difference between Git and GitHub?</h4>
+<p><strong>Answer</strong>: Git is the local CLI tool that tracks code history. GitHub is an online cloud platform that hosts Git repositories for team collaboration.</p>
+<h4>Q20: What does <code>git clone</code> do?</h4>
+<p><strong>Answer</strong>: It downloads a full copy of a remote Git repository to your local computer.</p>
+<h4>Q21: What is a Swap file in Linux?</h4>
+<p><strong>Answer</strong>: A file on the hard drive used as virtual RAM when physical system RAM becomes fully saturated.</p>
+<h4>Q22: What is AWS ECR?</h4>
+<p><strong>Answer</strong>: Amazon Elastic Container Registry (ECR) is a managed Docker container registry service for storing and pulling container images securely.</p>
+<h4>Q23: What is an Elastic IP in AWS?</h4>
+<p><strong>Answer</strong>: A permanent, static public IPv4 address allocated to your AWS account that remains constant even when EC2 instances are stopped and restarted.</p>
+<h4>Q24: What is an AWS Security Group?</h4>
+<p><strong>Answer</strong>: A virtual firewall regulating inbound and outbound network traffic rules for EC2 instances.</p>
+<h4>Q25: What is the purpose of UFW in Ubuntu?</h4>
+<p><strong>Answer</strong>: Uncomplicated Firewall (UFW) is a user-friendly CLI frontend for managing Linux <code>iptables</code> packet filtering rules.</p>
+<hr>
+<h3>Section 2: Intermediate Questions (26–50)</h3>
+<h4>Q26: Explain the Linux file permission <code>chmod 755 script.sh</code>.</h4>
+<p><strong>Answer</strong>:</p>
+<ul>
+<li><code>7</code> (Owner): Read (4) + Write (2) + Execute (1) = Full access.</li>
+<li><code>5</code> (Group): Read (4) + Execute (1) = Read and run only.</li>
+<li><code>5</code> (Others): Read (4) + Execute (1) = Read and run only.</li>
+</ul>
+<h4>Q27: How does Nginx handle WebSockets proxying differently than standard HTTP?</h4>
+<p><strong>Answer</strong>: Standard HTTP connections close after each request. WebSockets require persistent full-duplex TCP pipes. Nginx requires explicit protocol upgrade headers (<code>Upgrade: $http_upgrade</code>, <code>Connection: &quot;upgrade&quot;</code>) and long timeout settings (<code>proxy_read_timeout</code>) to prevent dropping active WebSocket sessions.</p>
+<h4>Q28: How does the Let&#39;s Encrypt ACME HTTP-01 challenge work?</h4>
+<p><strong>Answer</strong>: Let&#39;s Encrypt gives Certbot a cryptographic token. Certbot places it at <code>http://domain/.well-known/acme-challenge/token</code>. The Let&#39;s Encrypt CA makes an HTTP GET request to that URL. If the token matches, domain ownership is verified and the certificate is issued.</p>
+<h4>Q29: What happens when an EC2 instance experiences an Out-Of-Memory (OOM) condition?</h4>
+<p><strong>Answer</strong>: If physical RAM and Swap space are completely exhausted, the Linux kernel invokes the OOM Killer process, which selects and forcefully terminates (<code>SIGKILL</code>) the process consuming the most RAM to prevent a kernel crash.</p>
+<h4>Q30: What is the difference between asymmetric and symmetric encryption in TLS?</h4>
+<p><strong>Answer</strong>: Asymmetric encryption uses a Public key to encrypt and a Private key to decrypt during the initial TLS handshake (slow). Symmetric encryption uses a single shared secret key negotiated during the handshake to encrypt data rapidly during the session.</p>
+<h4>Q31: How do Docker volume mounts differ from bind mounts?</h4>
+<p><strong>Answer</strong>: Volumes are managed entirely by Docker inside <code>/var/lib/docker/volumes/</code> on the host, isolated from host filesystem clutter. Bind mounts map any arbitrary host directory (e.g. <code>/opt/excalidraw/logs</code>) directly into a container.</p>
+<h4>Q32: Why did we run <code>newgrp docker</code> after adding the <code>ubuntu</code> user to the <code>docker</code> group?</h4>
+<p><strong>Answer</strong>: Adding a user to a group in <code>/etc/group</code> does not update existing active shell sessions. <code>newgrp docker</code> recalculates the current session&#39;s group permissions without requiring an SSH logout/login cycle.</p>
+<h4>Q33: What is the purpose of <code>ssl_dhparam</code> in Nginx configuration?</h4>
+<p><strong>Answer</strong>: Diffie-Hellman parameters strengthen Perfect Forward Secrecy (PFS) during TLS key exchanges, ensuring that compromised private keys cannot retroactively decrypt past recorded traffic sessions.</p>
+<h4>Q34: What is the difference between Docker <code>ports:</code> mapping and <code>expose:</code>?</h4>
+<p><strong>Answer</strong>: <code>ports:</code> binds a container port to a physical host network port (making it accessible externally). <code>expose:</code> documents ports for inter-container communication on internal Docker networks without opening them to the host network.</p>
+<h4>Q35: What is the purpose of AWS IAM Roles for EC2?</h4>
+<p><strong>Answer</strong>: IAM Roles allow EC2 instances to authenticate securely to AWS services (like ECR or S3) using temporary AWS STS credentials automatically rotated by the instance profile, eliminating hardcoded secret keys on disk.</p>
+<h4>Q36: How does Docker Compose handle service DNS resolution?</h4>
+<p><strong>Answer</strong>: Docker Compose creates an embedded DNS server on user-defined networks (<code>excalidraw-net</code>). Containers resolve other container service names (e.g., <code>http://excalidraw:80</code>) directly to their internal container IP addresses.</p>
+<h4>Q37: What is the function of <code>docker-entrypoint.sh</code> scripts in production containers?</h4>
+<p><strong>Answer</strong>: Entrypoint scripts run as PID 1 inside containers on startup to perform runtime initialization—such as injecting dynamic environment variables into static HTML files—before starting the main application server process.</p>
+<h4>Q38: Why should you avoid using <code>0.0.0.0/0</code> as the source for Port 22 in a Security Group?</h4>
+<p><strong>Answer</strong>: Exposing SSH globally invites automated malicious botnets to continuously scan and brute-force password/key vulnerabilities. Restricting SSH to your specific IP blocks external unauthorized connection attempts.</p>
+<h4>Q39: What is the purpose of <code>fail2ban</code>?</h4>
+<p><strong>Answer</strong>: <code>fail2ban</code> dynamically monitors log files (e.g., <code>/var/log/auth.log</code>) for repeated failed login patterns and updates firewall rules (<code>iptables</code>/<code>ufw</code>) to temporarily or permanently ban offending IP addresses.</p>
+<h4>Q40: What is the difference between <code>docker stop</code> and <code>docker kill</code>?</h4>
+<p><strong>Answer</strong>: <code>docker stop</code> sends a <code>SIGTERM</code> signal, allowing the container process a grace period (default 10s) to clean up state before shutting down. <code>docker kill</code> sends an immediate <code>SIGKILL</code> signal, instantly stopping the container.</p>
+<h4>Q41: What is the purpose of OCSP Stapling in Nginx?</h4>
+<p><strong>Answer</strong>: OCSP Stapling allows Nginx to query the CA for certificate revocation status and append (staple) the timestamped proof directly into the TLS handshake, saving the client an extra DNS/HTTP lookup round-trip.</p>
+<h4>Q42: What is the difference between standard Docker logs and log rotation drivers?</h4>
+<p><strong>Answer</strong>: Standard Docker logging writes stdout/stderr to JSON files indefinitely, which can fill up server disk space. The <code>json-file</code> driver with <code>max-size</code> and <code>max-file</code> options automatically caps log file sizes and rotates old log files out.</p>
+<h4>Q43: What does the <code>--build-arg</code> flag do in <code>docker build</code>?</h4>
+<p><strong>Answer</strong>: It passes environment variables into the Dockerfile execution scope specifically for use during the image build process (e.g., passing Git SHA tags).</p>
+<h4>Q44: What is the function of <code>ssl_tokens off;</code> in Nginx?</h4>
+<p><strong>Answer</strong>: It hides Nginx version numbers from HTTP server response headers and error pages, preventing attackers from identifying specific vulnerable Nginx version releases.</p>
+<h4>Q45: How does Linux handle process management with <code>systemd</code>?</h4>
+<p><strong>Answer</strong>: <code>systemd</code> is the init process (PID 1) that boots the system, spawns background services (daemons), manages service dependencies, and automatically restarts failed background services.</p>
+<h4>Q46: What is a Git SHA commit hash?</h4>
+<p><strong>Answer</strong>: A unique 40-character SHA-1 checksum generated from the exact contents, metadata, parent, and timestamp of a commit snapshot.</p>
+<h4>Q47: Why do we use multi-stage Docker builds for single-page applications?</h4>
+<p><strong>Answer</strong>: Multi-stage builds compile source code in a heavy build environment (e.g., Node.js with devDependencies), then copy only final compiled static assets into a tiny production server image (e.g., Nginx Alpine), reducing final image size by 90%+.</p>
+<h4>Q48: What is the difference between <code>curl</code> and <code>wget</code>?</h4>
+<p><strong>Answer</strong>: Both fetch data over networks. <code>curl</code> is a versatile tool supporting multiple protocols (HTTP/FTP/SCP) printing output to stdout by default. <code>wget</code> is optimized for downloading files recursively.</p>
+<h4>Q49: What is the difference between <code>127.0.0.1</code> and <code>0.0.0.0</code>?</h4>
+<p><strong>Answer</strong>: <code>127.0.0.1</code> (loopback) refers exclusively to the local computer itself. <code>0.0.0.0</code> is a wildcard address meaning &quot;listen on all available network interface addresses on this machine.&quot;</p>
+<h4>Q50: What is the purpose of <code>healthcheck:</code> blocks in Docker Compose?</h4>
+<p><strong>Answer</strong>: Healthchecks run periodic test commands inside containers to verify application functionality. Compose uses health status to defer dependent service launches until upstream services report healthy status.</p>
+<hr>
+<h3>Section 3: Scenario-Based Architecture Questions (51–60)</h3>
+<h4>Q51: Scenario: Your website <code>draw.example.com</code> shows &quot;502 Bad Gateway&quot; when visited in a browser. How do you diagnose and fix this step-by-step?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li><strong>Understand 502</strong>: Nginx (<code>nginx-proxy</code>) is online, but it cannot connect to the upstream container (<code>excalidraw-app</code>).</li>
+<li><strong>Step 1 — Check Containers</strong>: Run <code>docker compose ps</code> on EC2 to see if <code>excalidraw-app</code> is running or crashed.</li>
+<li><strong>Step 2 — Check Logs</strong>: Run <code>docker logs excalidraw-app</code> to see application error tracebacks.</li>
+<li><strong>Step 3 — Inspect Proxy Logs</strong>: Run <code>docker logs excalidraw-proxy</code> to check upstream network connection errors.</li>
+<li><strong>Step 4 — Verify Network</strong>: Ensure both containers are attached to <code>excalidraw-net</code> and <code>excalidraw-app</code> listens on Port 80 internally.</li>
+</ol>
+<h4>Q52: Scenario: Your EC2 instance becomes completely unresponsive to SSH connections. What are your diagnostic steps?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Check AWS Console instance status checks (System Status Check vs Instance Status Check).</li>
+<li>Verify Security Group rules haven&#39;t accidentally modified Port 22 permissions.</li>
+<li>Use <strong>AWS EC2 Instance Connect</strong> or <strong>SSM Session Manager</strong> from the AWS Console browser to open a serial emergency shell.</li>
+<li>Check if the system ran out of RAM/Swap (<code>free -h</code> / <code>dmesg | grep oom</code>) causing system lockup.</li>
+<li>Reboot the instance from AWS Console if unresponsive.</li>
+</ol>
+<h4>Q53: Scenario: Let&#39;s Encrypt certificate renewal fails automatically after 60 days. How do you troubleshoot?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Inspect Certbot container logs: <code>docker logs excalidraw-certbot</code>.</li>
+<li>Check if Port 80 is open and accessible from the public internet (<code>curl -I http://draw.example.com/.well-known/acme-challenge/test</code>).</li>
+<li>Verify DNS A-record hasn&#39;t changed or expired.</li>
+<li>Execute manual renewal dry-run test: <code>docker run --rm -v ... certbot/certbot renew --dry-run</code>.</li>
+</ol>
+<h4>Q54: Scenario: Real-time whiteboard updates work locally, but fail to sync between two users on the deployed EC2 server. Why?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Check browser console network tab for WebSocket connection failures on <code>/socket.io/</code>.</li>
+<li>Verify <code>nginx-proxy.conf</code> includes WebSocket upgrade headers (<code>Upgrade</code> and <code>Connection</code>).</li>
+<li>Check <code>excalidraw-room</code> container logs (<code>docker logs excalidraw-room</code>).</li>
+<li>Ensure <code>VITE_APP_WS_SERVER_URL</code> in <code>.env.production</code> points to <code>https://draw.example.com</code> rather than <code>localhost</code>.</li>
+</ol>
+<h4>Q55: Scenario: Your Docker image build fails on EC2 due to <code>No space left on device</code>. How do you recover?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Check disk usage: <code>df -h</code>.</li>
+<li>Clean up dangling Docker images, unused containers, and build cache: <code>docker system prune -a --volumes</code>.</li>
+<li>Check log file sizes in <code>/var/log/</code> and <code>/var/lib/docker/containers/</code>.</li>
+<li>If storage is permanently full, modify the EBS volume size in AWS Console from 30 GB to 40 GB and resize the filesystem using <code>sudo resize2fs /dev/xvda</code>.</li>
+</ol>
+<h4>Q56: Scenario: You modify code on your local laptop, push it to ECR, but running <code>deploy.sh</code> on EC2 does not load your new changes. Why?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>You deployed using the <code>:latest</code> tag, but Docker cached the previous <code>:latest</code> image locally on EC2 and didn&#39;t pull new layers.</li>
+<li><strong>Fix</strong>: Explicitly run <code>docker pull ${ECR_REGISTRY}/excalidraw:latest</code> before <code>docker compose up -d</code>, or tag images with unique Git SHAs (<code>:abc1234</code>) instead of static tags.</li>
+</ol>
+<h4>Q57: Scenario: A developer committed their <code>.env.production</code> file containing secret Firebase credentials to a public GitHub repo. What steps must be taken immediately?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li><strong>Revoke Credentials Instantly</strong>: Log into Firebase/AWS console and revoke the exposed API keys and secrets.</li>
+<li><strong>Purge Git History</strong>: Use <code>git-filter-repo</code> or BFG Repo-Cleaner to strip the secret file completely from all past Git commit history.</li>
+<li><strong>Force Push</strong>: Push sanitized history to GitHub (<code>git push origin --force --all</code>).</li>
+<li><strong>Issue New Credentials</strong>: Generate brand new secret keys and add <code>.env.production</code> to <code>.gitignore</code>.</li>
+</ol>
+<h4>Q58: Scenario: Traffic to your site increases from 10 users to 10,000 users overnight. Your <code>t2.micro</code> server crashes due to 100% CPU usage. What is your scaling strategy?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li><strong>Vertical Scale (Immediate)</strong>: Change EC2 instance type from <code>t2.micro</code> to <code>t3.medium</code> (2 vCPUs, 4 GB RAM) in AWS Console.</li>
+<li><strong>Horizontal Scale (Architecture)</strong>:<ul>
+<li>Move static assets to AWS CloudFront CDN / S3 bucket.</li>
+<li>Deploy an AWS Application Load Balancer (ALB) in front of multiple EC2 instances.</li>
+<li>Run <code>excalidraw-room</code> across multiple nodes backed by a Redis adapter for Socket.IO state synchronization.</li>
+</ul>
+</li>
+</ol>
+<h4>Q59: Scenario: Running <code>bash deploy/setup.sh</code> hangs indefinitely at <code>apt-get update</code>. What is the issue?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Another <code>apt</code> background process (like unattended security upgrades) holds the dpkg lock file <code>/var/lib/dpkg/lock-frontend</code>.</li>
+<li><strong>Fix</strong>: Wait for unattended upgrades to complete, or check running processes (<code>ps aux | grep apt</code>) and safely kill stalled instances before clearing the lock file.</li>
+</ol>
+<h4>Q60: Scenario: Users report that visiting <code>http://draw.example.com</code> shows a blank page, but <code>https://draw.example.com</code> works perfectly. What is wrong?</h4>
+<p><strong>Answer</strong>:</p>
+<ol>
+<li>Nginx Port 80 server block is serving static files instead of executing an HTTP 301 redirect to HTTPS.</li>
+<li><strong>Fix</strong>: Update Nginx Port 80 configuration block to enforce <code>return 301 https://$host$request_uri;</code> for all routes except <code>/.well-known/acme-challenge/</code>.</li>
+</ol>
+<hr>
+<p>compare our deployment against industry architectures and read the final reflection!</p>
+<hr>
+<h1>Module 9: Real Industry Architectures, Reflection &amp; Final Summary</h1>
+<hr>
+<h2>PART 18: Real Industry Architecture vs Our Deployment</h2>
+<p>Now that you have deployed Excalidraw on a single AWS EC2 server, how does your setup compare to massive tech companies serving millions of requests per second?</p>
+<pre><code>OUR LEARNING DEPLOYMENT (Single Node):
+[Users] ──► [Elastic IP] ──► [EC2 t2.micro] ──► [Docker (Nginx + SPA + WebSockets)]
+
+ENTERPRISE INDUSTRY ARCHITECTURE (Multi-Region Elastic Cloud):
+[Users] ──► [Route 53 / Anycast] ──► [CloudFront CDN]
+                                         │
+                 ┌───────────────────────┴───────────────────────┐
+                 ▼                                               ▼
+   [Application Load Balancer]                     [Application Load Balancer]
+                 │                                               │
+   [Auto Scaling Group: K8s EKS]                   [Auto Scaling Group: K8s EKS]
+  (Node 1)  (Node 2)  (Node 3)                    (Node 1)  (Node 2)  (Node 3)
+                 │                                               │
+                 └───────────────────────┬───────────────────────┘
+                                         ▼
+                        [Managed AWS Aurora / Redis Cluster]
+</code></pre>
+<hr>
+<h3>How Major Tech Companies Host Applications</h3>
+<h4>1. Netflix (Video Streaming at Scale)</h4>
+<ul>
+<li><strong>Architecture</strong>: Netflix runs 100% on AWS using tens of thousands of EC2 virtual servers across multiple global AWS regions.</li>
+<li><strong>Key Difference</strong>: Netflix does not run static server configurations. They use <strong>Auto Scaling Groups (ASGs)</strong> that automatically launch thousands of microservice containers during peak hours and terminate them at night. Video content is cached globally on custom hardware nodes called Open Connect CDN.</li>
+</ul>
+<h4>2. Discord (Real-Time Communication)</h4>
+<ul>
+<li><strong>Architecture</strong>: Discord handles tens of millions of concurrent WebSocket connections for voice and chat.</li>
+<li><strong>Key Difference</strong>: While our deployment ran Socket.IO (<code>excalidraw-room</code>) on a single Node process, Discord uses <strong>Elixir and Rust</strong> microservices running on Kubernetes (EKS). WebSocket sessions are distributed across thousands of servers using consistent hash rings backed by Redis clusters.</li>
+</ul>
+<h4>3. GitHub (Source Code &amp; CI/CD)</h4>
+<ul>
+<li><strong>Architecture</strong>: GitHub runs hybrid cloud infrastructure using Kubernetes, bare-metal servers, and AWS.</li>
+<li><strong>Key Difference</strong>: GitHub uses automated CI/CD pipelines (GitHub Actions). When a developer pushes code, automated test runners compile Docker images, push them to container registries, and trigger zero-downtime rolling deployments across production clusters automatically.</li>
+</ul>
+<hr>
+<h3>Comparison Matrix: Our Setup vs Enterprise Scale</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Infrastructure Layer</th>
+<th align="left">Our Excalidraw Deployment</th>
+<th align="left">Enterprise Production Standard</th>
+<th align="left">Why Ours Was Right-Sized</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Compute</strong></td>
+<td align="left">1x AWS EC2 <code>t2.micro</code></td>
+<td align="left">AWS EKS (Kubernetes) Clusters</td>
+<td align="left">Learning primitives on 1 node is essential before managing 1,000 nodes.</td>
+</tr>
+<tr>
+<td align="left"><strong>Database</strong></td>
+<td align="left">Firebase / Local Filesystem</td>
+<td align="left">Managed AWS Aurora PostgreSQL + Redis</td>
+<td align="left">Kept infrastructure costs at $0 while learning cloud hosting.</td>
+</tr>
+<tr>
+<td align="left"><strong>Load Balancer</strong></td>
+<td align="left">Docker Nginx Container</td>
+<td align="left">AWS Application Load Balancer (ALB)</td>
+<td align="left">Nginx proxying teaches exact HTTP routing logic used by AWS ALBs under the hood.</td>
+</tr>
+<tr>
+<td align="left"><strong>TLS Certificates</strong></td>
+<td align="left">Certbot Container (Let&#39;s Encrypt)</td>
+<td align="left">AWS Certificate Manager (ACM)</td>
+<td align="left">Running Certbot manually demystified ACME challenges and RSA keypairs.</td>
+</tr>
+<tr>
+<td align="left"><strong>DNS</strong></td>
+<td align="left">Static A Record</td>
+<td align="left">Route 53 Geolocation Routing</td>
+<td align="left">Simple A-records build clear DNS mental models before complex failover policies.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>PART 19: Personal Reflection &amp; Knowledge Gained</h2>
+<h3>What You Unknowingly Gained</h3>
+<p>When you started this project, words like <em>Docker</em>, <em>Nginx</em>, <em>EC2</em>, <em>ACME</em>, and <em>Reverse Proxy</em> sounded like alien technobabble. Look at what you actually mastered:</p>
+<ol>
+<li><strong>Systems Administration</strong>: You navigated Linux text terminals, configured FHS directory structures, created swap files, and enforced UNIX file permissions (<code>chmod</code>/<code>chown</code>).</li>
+<li><strong>Cloud Networking</strong>: You configured virtual firewalls (Security Groups &amp; UFW), assigned Elastic IP addresses, and resolved DNS hostnames to IP addresses.</li>
+<li><strong>Container Engineering</strong>: You built Docker images, wrote <code>docker-compose.ec2.yml</code> orchestration stacks, managed virtual bridge networks, and attached persistent volumes.</li>
+<li><strong>Web Security</strong>: You terminated TLS encryption, acquired signed Let&#39;s Encrypt certificates using ACME HTTP-01 challenges, and configured secure Nginx proxy headers.</li>
+<li><strong>Production Operations</strong>: You wrote deployment scripts (<code>setup.sh</code>, <code>deploy.sh</code>), configured health checks, and debugged real-world errors.</li>
+</ol>
+<hr>
+<h3>Mistakes Every Beginner Makes (And What You Learned)</h3>
+<ul>
+<li><strong>Beginner Trap 1</strong>: Treating containers like Virtual Machines. <em>Lesson Learned</em>: Containers are ephemeral processes, not heavy VMs. Store persistent data in volumes!</li>
+<li><strong>Beginner Trap 2</strong>: Hardcoding secret keys in code. <em>Lesson Learned</em>: Pass configuration dynamically via <code>.env.production</code> environment variables!</li>
+<li><strong>Beginner Trap 3</strong>: Exposing all internal ports publicly. <em>Lesson Learned</em>: Hide backend containers behind a single secure reverse proxy (<code>nginx-proxy</code>)!</li>
+</ul>
+<hr>
+<h3>Self-Assessment Mastery Checklist</h3>
+<p>Can you check off every item below?</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> I can explain why companies use AWS instead of buying physical servers.</li>
+<li><input checked="" disabled="" type="checkbox"> I can SSH into an Ubuntu server using an RSA key pair.</li>
+<li><input checked="" disabled="" type="checkbox"> I can explain the difference between RAM, CPU, Disk, and Swap memory.</li>
+<li><input checked="" disabled="" type="checkbox"> I can read a <code>docker-compose.yml</code> file and explain every service, volume, and network.</li>
+<li><input checked="" disabled="" type="checkbox"> I can explain what Nginx does when a request arrives on Port 443.</li>
+<li><input checked="" disabled="" type="checkbox"> I can trace a DNS lookup from browser to server IP address.</li>
+<li><input checked="" disabled="" type="checkbox"> I can explain how Let&#39;s Encrypt verifies domain ownership via ACME HTTP-01 challenges.</li>
+<li><input checked="" disabled="" type="checkbox"> I can diagnose a <code>502 Bad Gateway</code> error using container logs.</li>
+</ul>
+<hr>
+<h2>PART 20: Final Summary — From Zero to Cloud Deployer</h2>
+<h3>The Transformation Story</h3>
+<p>Think back to the beginning of this journey.</p>
+<p>You started with a simple code repository on your laptop. If you wanted someone to see your work, you had to call them over to look at your screen.</p>
+<p>Through this project, you stepped into the shoes of a Cloud Engineer:</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        YOUR TRANSFORMATION STORY                       │
+│                                                                        │
+│  BEFORE:  &quot;What is AWS? How does a website get on the internet?&quot;       │
+│                                                                        │
+│  STEP 1:  You requested compute power from AWS in Virginia (us-east-1).│
+│  STEP 2:  You booted an Ubuntu 24.04 Linux server in seconds.          │
+│  STEP 3:  You built a Docker container image and pushed it to ECR.     │
+│  STEP 4:  You locked down security with UFW firewalls and SSH keys.    │
+│  STEP 5:  You wired Nginx to reverse proxy WebSockets and React assets.│
+│  STEP 6:  You encrypted your site with free Let&#39;s Encrypt TLS certs.   │
+│                                                                        │
+│  AFTER:   &quot;I can deploy any application to the cloud securely.&quot;        │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>You didn&#39;t just deploy a whiteboard app. You built a <strong>production-grade cloud hosting architecture</strong> that powers modern internet infrastructure worldwide.</p>
+<hr>
+<h2>🔒 Chapter 9 Final Mini-Quiz</h2>
+<ol>
+<li><p><strong>Why is running a single Nginx reverse proxy container in front of backend containers considered better practice than exposing backend ports directly?</strong></p>
+<ul>
+<li>A) Because Nginx makes graphics render faster</li>
+<li>B) It provides a single secure point for SSL termination, rate limiting, and domain routing while keeping backend application containers isolated from public internet exposure</li>
+<li>C) Because AWS charges money for every open container port</li>
+<li>D) Nginx deletes old files automatically</li>
+</ul>
+</li>
+<li><p><strong>In enterprise architecture, what tool replaces manual server setup scripts by defining infrastructure as code files?</strong></p>
+<ul>
+<li>A) Git</li>
+<li>B) Terraform</li>
+<li>C) Photoshop</li>
+<li>D) Route 53</li>
+</ul>
+</li>
+<li><p><strong>What is the most important mindset shift from beginner developer to professional Cloud Engineer?</strong></p>
+<ul>
+<li>A) Memorizing every Linux command by heart</li>
+<li>B) Moving from &quot;it works on my machine&quot; to designing resilient, automated, secure, and reproducible systems that run anywhere</li>
+<li>C) Buying expensive laptops</li>
+<li>D) Using Windows instead of Linux</li>
+</ul>
+</li>
+</ol>
+<p><em>(Answers: 1-B, 2-B, 3-B)</em></p>
+<hr>
+<p>🎉 <strong>Congratulations! You have completed the Excalidraw-on-AWS Cloud Engineering Curriculum!</strong></p>
+<p>Return to the <strong><a href="file:///v:/projects/excalidraw/excalidraw/learning-guide/00-index.md">00-index.md</a></strong> master directory to review any chapter at any time.</p>
+
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'loose'
+    });
+  </script>
+</body>
+</html>

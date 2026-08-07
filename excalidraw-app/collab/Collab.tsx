@@ -68,6 +68,7 @@ import {
   getCollaborationLink,
   getSyncableElements,
 } from "../data";
+import { getEnv } from "../env";
 import {
   encodeFilesForUpload,
   FileManager,
@@ -531,7 +532,7 @@ class Collab extends PureComponent<CollabProps, CollabState> {
 
     try {
       this.portal.socket = this.portal.open(
-        socketIOClient(import.meta.env.VITE_APP_WS_SERVER_URL, {
+        socketIOClient(getEnv("VITE_APP_WS_SERVER_URL", import.meta.env.VITE_APP_WS_SERVER_URL), {
           transports: ["websocket", "polling"],
         }),
         roomId,
