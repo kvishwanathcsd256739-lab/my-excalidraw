@@ -24,5 +24,6 @@ jobs:
             set -e
             echo "Starting deployment on EC2..."
             cd /opt/excalidraw/repo
-            git pull origin master
+            git fetch origin master
+            git reset --hard origin/master
             bash deploy/deploy.sh
